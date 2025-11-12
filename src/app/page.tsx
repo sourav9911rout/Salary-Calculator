@@ -91,6 +91,35 @@ export default function Home() {
         </div>
         <footer className="text-center mt-12 text-sm text-muted-foreground">
           <p>&copy; {new Date().getFullYear()} 7th CPC Salary Calculator. All Rights Reserved.</p>
+          <div className="flex justify-center items-center gap-2 mt-4">
+            <p className="font-credit text-lg">Made by Sourav Kumar Rout with</p>
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="inline-block h-5 w-5"
+            >
+              <path
+                d="M22.56 12.25C22.56 11.42 22.49 10.61 22.36 9.82H12.24V14.45H18.06C17.82 16.03 16.99 17.34 15.65 18.27V21.1H19.5C21.52 19.16 22.56 16.08 22.56 12.25Z"
+                fill="#4285F4"
+              />
+              <path
+                d="M12.24 23C15.24 23 17.82 22.01 19.5 20.43L15.65 17.55C14.65 18.23 13.52 18.63 12.24 18.63C9.72 18.63 7.59 17.04 6.78 14.81H2.81V17.7C4.54 20.84 8.1 23 12.24 23Z"
+                fill="#34A853"
+              />
+              <path
+                d="M6.78 14.81C6.59 14.22 6.48 13.6 6.48 12.96C6.48 12.32 6.59 11.7 6.78 11.11V8.22H2.81C1.96 9.87 1.44 11.72 1.44 13.68C1.44 15.64 1.96 17.49 2.81 19.14L6.78 16.26V14.81Z"
+                fill="#FBBC05"
+              />
+              <path
+                d="M12.24 6.36C13.63 6.36 14.93 6.86 15.96 7.84L19.58 4.22C17.82 2.59 15.24 1.5 12.24 1.5C8.1 1.5 4.54 3.66 2.81 6.8L6.78 9.68C7.59 7.45 9.72 5.86 12.24 5.86V6.36Z"
+                fill="#EA4335"
+              />
+            </svg>
+            <p className="font-credit text-lg">Firebase Studio</p>
+          </div>
         </footer>
       </div>
     </main>
