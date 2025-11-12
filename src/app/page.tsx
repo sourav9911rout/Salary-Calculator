@@ -91,15 +91,15 @@ export default function Home() {
         </div>
         <footer className="text-center mt-12 text-sm text-muted-foreground">
           <p>&copy; {new Date().getFullYear()} 7th CPC Salary Calculator. All Rights Reserved.</p>
-          <div className="flex justify-center items-center gap-2 mt-4">
-            <p className="font-credit text-lg">Made by Sourav Kumar Rout with</p>
+          <div className="flex justify-center items-center gap-2 mt-2">
+            <p className="font-credit">Made by Sourav Kumar Rout with</p>
             <svg
-              width="24"
-              height="24"
+              width="16"
+              height="16"
               viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
-              className="inline-block h-5 w-5"
+              className="inline-block h-4 w-4"
             >
               <path
                 d="M22.56 12.25C22.56 11.42 22.49 10.61 22.36 9.82H12.24V14.45H18.06C17.82 16.03 16.99 17.34 15.65 18.27V21.1H19.5C21.52 19.16 22.56 16.08 22.56 12.25Z"
@@ -118,7 +118,7 @@ export default function Home() {
                 fill="#EA4335"
               />
             </svg>
-            <p className="font-credit text-lg">Firebase Studio</p>
+            <p className="font-credit">Firebase Studio</p>
           </div>
         </footer>
       </div>
