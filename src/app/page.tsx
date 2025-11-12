@@ -13,8 +13,9 @@ export default function Home() {
     setIsCalculating(true);
     setResults(null);
 
-    const { basicPay, monthYear, daysWorked, daPercentage, hraPercentage } = data;
-    const totalDaysInMonth = new Date(monthYear.getFullYear(), monthYear.getMonth() + 1, 0).getDate();
+    const { basicPay, month, year, daysWorked, daPercentage, hraPercentage } = data;
+    const monthIndex = new Date(Date.parse(month +" 1, 2012")).getMonth();
+    const totalDaysInMonth = new Date(year, monthIndex + 1, 0).getDate();
 
     const newBasicPay = (basicPay / totalDaysInMonth) * daysWorked;
     const daOnBasic = newBasicPay * (daPercentage / 100);
