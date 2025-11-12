@@ -26,6 +26,8 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { SalaryFormSchema, type SalaryFormData } from "@/lib/types"
+import { payMatrix } from "@/lib/pay-matrix"
+import { useEffect } from "react"
 
 interface SalaryFormProps {
   onCalculate: (data: SalaryFormData) => void;
@@ -59,11 +61,20 @@ export function SalaryForm({ onCalculate, isCalculating }: SalaryFormProps) {
     onCalculate(data);
   }
 
-  const payLevels = Array.from({ length: 18 }, (_, i) => (i + 1).toString());
+  const payLevels = Object.keys(payMatrix);
   const hraOptions = ["10", "20", "30"];
 
+  const watchPayLevel = form.watch("payLevel");
   const watchMonth = form.watch("month");
   const watchYear = form.watch("year");
+
+  const basicPayOptions = payMatrix[watchPayLevel as keyof typeof payMatrix] || [];
+
+  useEffect(() => {
+    if (basicPayOptions.length > 0) {
+      form.setValue('basicPay', basicPayOptions[0]);
+    }
+  }, [watchPayLevel, form, basicPayOptions]);
 
   const handleDateChange = (month: string, year: number) => {
     if (month && year) {
@@ -113,9 +124,20 @@ export function SalaryForm({ onCalculate, isCalculating }: SalaryFormProps) {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Current Basic Pay</FormLabel>
-                    <FormControl>
-                      <Input type="number" placeholder="e.g., 56100" {...field} />
-                    </FormControl>
+                    <Select onValueChange={(value) => field.onChange(parseInt(value))} value={field.value.toString()}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a basic pay" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {basicPayOptions.map((pay: number) => (
+                           <SelectItem key={pay} value={pay.toString()}>
+                              {pay.toLocaleString('en-IN')}
+                           </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
