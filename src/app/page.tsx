@@ -13,7 +13,7 @@ export default function Home() {
     setIsCalculating(true);
     setResults(null);
 
-    const { basicPay, month, year, daysWorked, daPercentage, hraPercentage } = data;
+    const { basicPay, month, year, daysWorked, daPercentage, hraPercentage, includeHpca, includeHra } = data;
     const monthIndex = new Date(Date.parse(month +" 1, 2012")).getMonth();
     const totalDaysInMonth = new Date(year, monthIndex + 1, 0).getDate();
 
@@ -30,13 +30,18 @@ export default function Home() {
     const daOnTa = ta * 0.58;
 
     let hpca = 0;
-    if (daysWorked > 15) {
-      hpca = 5125;
-    } else {
-      hpca = (5125 / totalDaysInMonth) * daysWorked;
+    if (includeHpca) {
+      if (daysWorked > 15) {
+        hpca = 5125;
+      } else {
+        hpca = (5125 / totalDaysInMonth) * daysWorked;
+      }
     }
     
-    const hra = newBasicPay * (parseInt(hraPercentage) / 100);
+    let hra = 0;
+    if (includeHra && hraPercentage) {
+      hra = newBasicPay * (parseInt(hraPercentage) / 100);
+    }
 
     const grossSalary = newBasicPay + daOnBasic + ta + daOnTa + hpca + hra;
 

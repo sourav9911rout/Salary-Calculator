@@ -28,6 +28,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { SalaryFormSchema, type SalaryFormData } from "@/lib/types"
 import { payMatrix } from "@/lib/pay-matrix"
 import { useEffect } from "react"
+import { Checkbox } from "@/components/ui/checkbox"
 
 interface SalaryFormProps {
   onCalculate: (data: SalaryFormData) => void;
@@ -54,6 +55,8 @@ export function SalaryForm({ onCalculate, isCalculating }: SalaryFormProps) {
       daysWorked: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate(),
       daPercentage: 50,
       hraPercentage: "30",
+      includeHpca: true,
+      includeHra: true,
     },
   })
 
@@ -67,6 +70,7 @@ export function SalaryForm({ onCalculate, isCalculating }: SalaryFormProps) {
   const watchPayLevel = form.watch("payLevel");
   const watchMonth = form.watch("month");
   const watchYear = form.watch("year");
+  const watchIncludeHra = form.watch("includeHra");
 
   const basicPayOptions = payMatrix[watchPayLevel as keyof typeof payMatrix] || [];
 
@@ -228,34 +232,73 @@ export function SalaryForm({ onCalculate, isCalculating }: SalaryFormProps) {
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="hraPercentage"
-              render={({ field }) => (
-                <FormItem className="space-y-3">
-                  <FormLabel>HRA Option</FormLabel>
-                  <FormControl>
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-6"
-                    >
-                      {hraOptions.map((option) => (
-                        <FormItem key={option} className="flex items-center space-x-3 space-y-0">
-                          <FormControl>
-                            <RadioGroupItem value={option} />
-                          </FormControl>
-                          <FormLabel className="font-normal">
-                            {option}%
-                          </FormLabel>
-                        </FormItem>
-                      ))}
-                    </RadioGroup>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="space-y-4">
+              <FormField
+                control={form.control}
+                name="includeHpca"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center space-x-3 space-y-0">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormLabel className="font-normal mb-0">
+                      Include HPCA
+                    </FormLabel>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="includeHra"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center space-x-3 space-y-0">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormLabel className="font-normal">
+                      Include HRA
+                    </FormLabel>
+                  </FormItem>
+                )}
+              />
+            </div>
+            
+            {watchIncludeHra && (
+              <FormField
+                control={form.control}
+                name="hraPercentage"
+                render={({ field }) => (
+                  <FormItem className="space-y-3">
+                    <FormLabel>HRA Option</FormLabel>
+                    <FormControl>
+                      <RadioGroup
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-6"
+                      >
+                        {hraOptions.map((option) => (
+                          <FormItem key={option} className="flex items-center space-x-3 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem value={option} />
+                            </FormControl>
+                            <FormLabel className="font-normal">
+                              {option}%
+                            </FormLabel>
+                          </FormItem>
+                        ))}
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
             
             <Button type="submit" disabled={isCalculating} className="w-full bg-accent hover:bg-accent/90 text-accent-foreground">
               {isCalculating ? (

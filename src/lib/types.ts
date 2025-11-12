@@ -13,9 +13,9 @@ export const SalaryFormSchema = z.object({
   year: z.coerce.number(),
   daysWorked: z.coerce.number({invalid_type_error: "Please enter a valid number"}).min(0, "Days worked cannot be negative").max(31, "Days worked cannot exceed 31"),
   daPercentage: z.coerce.number({invalid_type_error: "Please enter a valid number"}).min(0, "DA percentage cannot be negative"),
-  hraPercentage: z.enum(["10", "20", "30"], {
-    required_error: "You need to select an HRA option.",
-  }),
+  includeHpca: z.boolean().default(false),
+  includeHra: z.boolean().default(false),
+  hraPercentage: z.enum(["10", "20", "30"]).optional(),
 }).refine(data => {
   if (data.year && data.month) {
     const monthIndex = months.indexOf(data.month);
@@ -26,6 +26,14 @@ export const SalaryFormSchema = z.object({
 }, {
   message: "Days worked cannot exceed days in the selected month",
   path: ["daysWorked"],
+}).refine(data => {
+    if (data.includeHra) {
+        return !!data.hraPercentage;
+    }
+    return true;
+}, {
+    message: "You need to select an HRA option when HRA is included.",
+    path: ["hraPercentage"],
 });
 
 export type SalaryFormData = z.infer<typeof SalaryFormSchema>;
