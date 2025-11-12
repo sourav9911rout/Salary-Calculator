@@ -41,7 +41,7 @@ export default function Home() {
     const grossSalary = newBasicPay + daOnBasic + ta + daOnTa + hpca + hra;
 
     const fixedDeduction = 250;
-    const npsBase = newBasicPay + daOnBasic + ta + daOnTa + hra;
+    const npsBase = newBasicPay + daOnBasic;
     const nps = npsBase * 0.10;
 
     const totalDeductions = fixedDeduction + nps;
