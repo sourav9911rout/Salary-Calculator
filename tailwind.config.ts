@@ -13,7 +13,7 @@ export default {
         body: ['Inter', 'sans-serif'],
         headline: ['Inter', 'sans-serif'],
         code: ['monospace'],
-        credit: ['Times New Roman', 'serif'],
+        credit: ['Inter', 'sans-serif'],
       },
       colors: {
         background: 'hsl(var(--background))',
