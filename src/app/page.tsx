@@ -70,7 +70,7 @@ export default function Home() {
     <main className="min-h-screen p-4 sm:p-8">
       <div className="max-w-7xl mx-auto">
         <header className="text-center mb-10">
-          <h1 className="text-4xl lg:text-5xl font-extrabold text-primary tracking-tight font-headline">SalaryCraft</h1>
+          <h1 className="text-4xl lg:text-5xl font-extrabold text-primary tracking-tight font-headline">7th CPC Salary Calculator</h1>
           <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">
             An intuitive 7th CPC salary calculator. Enter your details to instantly compute your earnings and deductions.
           </p>
@@ -84,7 +84,7 @@ export default function Home() {
           </div>
         </div>
         <footer className="text-center mt-12 text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} SalaryCraft. All Rights Reserved.</p>
+          <p>&copy; {new Date().getFullYear()} 7th CPC Salary Calculator. All Rights Reserved.</p>
         </footer>
       </div>
     </main>

@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster"
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'SalaryCraft',
+  title: '7th CPC Salary Calculator',
   description: 'A 7th CPC Salary Calculator',
 };
 
