@@ -22,6 +22,7 @@ export default function Home() {
 
       const newBasicPay = (basicPay / totalDaysInMonth) * daysWorked;
       const daOnBasic = newBasicPay * (daPercentage / 100);
+      const employerContribution = newBasicPay * 0.14;
       
       let ta = 0;
       if (daysWorked > 15) {
@@ -46,7 +47,7 @@ export default function Home() {
         hra = newBasicPay * (parseInt(hraPercentage) / 100);
       }
 
-      const grossSalary = newBasicPay + daOnBasic + ta + daOnTa + hpca + hra;
+      const grossSalary = newBasicPay + daOnBasic + ta + daOnTa + hpca + hra + employerContribution;
 
       const fixedDeduction = 250;
       const npsBase = newBasicPay + daOnBasic;
@@ -60,6 +61,7 @@ export default function Home() {
           year,
           newBasicPay: Math.round(newBasicPay),
           daOnBasic: Math.round(daOnBasic),
+          employerContribution: Math.round(employerContribution),
           ta: Math.round(ta),
           daOnTa: Math.round(daOnTa),
           hpca: Math.round(hpca),
@@ -75,6 +77,7 @@ export default function Home() {
     const totals = monthlyResults.reduce((acc, current) => {
         acc.newBasicPay += current.newBasicPay;
         acc.daOnBasic += current.daOnBasic;
+        acc.employerContribution += current.employerContribution;
         acc.ta += current.ta;
         acc.daOnTa += current.daOnTa;
         acc.hpca += current.hpca;
@@ -88,6 +91,7 @@ export default function Home() {
     }, {
         newBasicPay: 0,
         daOnBasic: 0,
+        employerContribution: 0,
         ta: 0,
         daOnTa: 0,
         hpca: 0,

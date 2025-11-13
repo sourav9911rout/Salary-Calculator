@@ -50,6 +50,7 @@ export type MonthlySalaryResult = {
   year: number;
   newBasicPay: number;
   daOnBasic: number;
+  employerContribution: number;
   ta: number;
   daOnTa: number;
   hpca: number;
