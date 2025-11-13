@@ -59,13 +59,12 @@ export default function Home() {
         hra = newBasicPay * (parseInt(hraPercentage) / 100);
       }
 
-      const grossSalary = newBasicPay + daOnBasic + ta + daOnTa + hpca + hra;
-      const totalEarnings = grossSalary + nps + employerContribution;
+      const grossSalary = newBasicPay + daOnBasic + ta + daOnTa + hpca + hra + employerContribution;
 
       const fixedDeduction = getFixedDeduction(payLevel);
       
-      const totalDeductions = fixedDeduction + nps + employerContribution;
-      const netSalary = grossSalary - (nps + fixedDeduction);
+      const totalDeductions = nps + employerContribution + fixedDeduction;
+      const netSalary = grossSalary - totalDeductions;
       
       return {
           month,
@@ -78,7 +77,6 @@ export default function Home() {
           hpca: Math.round(hpca),
           hra: Math.round(hra),
           grossSalary: Math.round(grossSalary),
-          totalEarnings: Math.round(totalEarnings),
           nps: Math.round(nps),
           fixedDeduction,
           totalDeductions: Math.round(totalDeductions),
@@ -95,7 +93,6 @@ export default function Home() {
         acc.hpca += current.hpca;
         acc.hra += current.hra;
         acc.grossSalary += current.grossSalary;
-        acc.totalEarnings += current.totalEarnings;
         acc.nps += current.nps;
         acc.fixedDeduction += current.fixedDeduction;
         acc.totalDeductions += current.totalDeductions;
@@ -110,7 +107,6 @@ export default function Home() {
         hpca: 0,
         hra: 0,
         grossSalary: 0,
-        totalEarnings: 0,
         nps: 0,
         fixedDeduction: 0,
         totalDeductions: 0,

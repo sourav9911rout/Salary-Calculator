@@ -40,19 +40,11 @@ const MonthlyBreakdown = ({ result }: { result: MonthlySalaryResult }) => (
         <ResultRow label="DA on TA" value={formatCurrency(result.daOnTa)} />
         <ResultRow label="HPCA" value={formatCurrency(result.hpca)} />
         <ResultRow label="House Rent Allowance (HRA)" value={formatCurrency(result.hra)} />
+        <ResultRow label="NPS Employer Contribution" value={formatCurrency(result.employerContribution)} isSubtle/>
+        <Separator/>
         <div className="flex justify-between items-center py-2 text-md font-semibold">
             <p>Gross Salary</p>
             <p className="text-primary">{formatCurrency(result.grossSalary)}</p>
-        </div>
-        <Separator/>
-        <ResultRow label="NPS (10%)" value={formatCurrency(result.nps)} isSubtle/>
-        <ResultRow label="NPS Employer Contribution" value={formatCurrency(result.employerContribution)} isSubtle/>
-        
-        <Separator className="my-4" />
-        
-        <div className="flex justify-between items-center py-3 text-lg font-bold">
-            <p>Total Earnings</p>
-            <p className="text-primary">{formatCurrency(result.totalEarnings)}</p>
         </div>
 
         <Separator className="my-4" />
@@ -180,20 +172,13 @@ export function SalaryResults({ results, isCalculating }: SalaryResultsProps) {
                     <ResultRow label="Total DA on TA" value={formatCurrency(results.totals.daOnTa)} />
                     <ResultRow label="Total HPCA" value={formatCurrency(results.totals.hpca)} />
                     <ResultRow label="Total HRA" value={formatCurrency(results.totals.hra)} />
+                    <ResultRow label="Total NPS Employer Contribution" value={formatCurrency(results.totals.employerContribution)} isSubtle/>
+                    
+                    <Separator/>
 
                     <div className="flex justify-between items-center py-2 text-md font-semibold">
                         <p>Total Gross Salary</p>
-                        <p className="text-primary">{formatCurrency(results.totals.grossSalary)}</p>
-                    </div>
-                    <Separator/>
-                    <ResultRow label="Total NPS (10%)" value={formatCurrency(results.totals.nps)} isSubtle />
-                    <ResultRow label="Total NPS Employer Contribution" value={formatCurrency(results.totals.employerContribution)} isSubtle />
-                    
-                    <Separator className="my-4" />
-                    
-                    <div className="flex justify-between items-center py-3 text-lg font-bold">
-                        <p>Grand Total Earnings</p>
-                        <p className="text-accent">{formatCurrency(results.totals.totalEarnings)}</p>
+                        <p className="text-accent">{formatCurrency(results.totals.grossSalary)}</p>
                     </div>
 
                     <Separator className="my-4" />
