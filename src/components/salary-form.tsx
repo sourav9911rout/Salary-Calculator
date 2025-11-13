@@ -43,6 +43,8 @@ const months = [
 const currentYear = new Date().getFullYear();
 const years = Array.from({ length: currentYear - 2016 + 2 }, (_, i) => 2016 + i);
 
+const payLevels = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "13A", "14"];
+
 
 export function SalaryForm({ onCalculate, isCalculating }: SalaryFormProps) {
   const form = useForm<z.infer<typeof SalaryFormSchema>>({
@@ -64,7 +66,6 @@ export function SalaryForm({ onCalculate, isCalculating }: SalaryFormProps) {
     onCalculate(data);
   }
 
-  const payLevels = Object.keys(payMatrix);
   const hraOptions = ["10", "20", "30"];
 
   const watchPayLevel = form.watch("payLevel");
