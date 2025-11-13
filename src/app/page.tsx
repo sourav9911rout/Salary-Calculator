@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { SalaryForm } from "@/components/salary-form";
 import { SalaryResults } from "@/components/salary-results";
-import type { SalaryFormData, SalaryResultsData } from "@/lib/types";
+import type { SalaryFormData, SalaryResultsData, MonthlySalaryResult } from "@/lib/types";
 
 export default function Home() {
   const [results, setResults] = useState<SalaryResultsData | null>(null);
@@ -13,57 +13,95 @@ export default function Home() {
     setIsCalculating(true);
     setResults(null);
 
-    const { basicPay, month, year, daysWorked, daPercentage, hraPercentage, includeHpca, includeHra } = data;
-    const monthIndex = new Date(Date.parse(month +" 1, 2012")).getMonth();
-    const totalDaysInMonth = new Date(year, monthIndex + 1, 0).getDate();
-
-    const newBasicPay = (basicPay / totalDaysInMonth) * daysWorked;
-    const daOnBasic = newBasicPay * (daPercentage / 100);
+    const { basicPay, daPercentage, hraPercentage, includeHpca, includeHra, months } = data;
     
-    let ta = 0;
-    if (daysWorked > 15) {
-      ta = 3600;
-    } else {
-      ta = (3600 / totalDaysInMonth) * daysWorked;
-    }
+    const monthlyResults: MonthlySalaryResult[] = months.map(monthEntry => {
+      const { month, year, daysWorked } = monthEntry;
+      const monthIndex = new Date(Date.parse(month +" 1, 2012")).getMonth();
+      const totalDaysInMonth = new Date(year, monthIndex + 1, 0).getDate();
 
-    const daOnTa = ta * 0.58;
-
-    let hpca = 0;
-    if (includeHpca) {
+      const newBasicPay = (basicPay / totalDaysInMonth) * daysWorked;
+      const daOnBasic = newBasicPay * (daPercentage / 100);
+      
+      let ta = 0;
       if (daysWorked > 15) {
-        hpca = 5125;
+        ta = 3600;
       } else {
-        hpca = (5125 / totalDaysInMonth) * daysWorked;
+        ta = (3600 / totalDaysInMonth) * daysWorked;
       }
-    }
-    
-    let hra = 0;
-    if (includeHra && hraPercentage) {
-      hra = newBasicPay * (parseInt(hraPercentage) / 100);
-    }
 
-    const grossSalary = newBasicPay + daOnBasic + ta + daOnTa + hpca + hra;
+      const daOnTa = ta * 0.58;
 
-    const fixedDeduction = 250;
-    const npsBase = newBasicPay + daOnBasic;
-    const nps = npsBase * 0.10;
+      let hpca = 0;
+      if (includeHpca) {
+        if (daysWorked > 15) {
+          hpca = 5125;
+        } else {
+          hpca = (5125 / totalDaysInMonth) * daysWorked;
+        }
+      }
+      
+      let hra = 0;
+      if (includeHra && hraPercentage) {
+        hra = newBasicPay * (parseInt(hraPercentage) / 100);
+      }
 
-    const totalDeductions = fixedDeduction + nps;
-    const netSalary = grossSalary - totalDeductions;
-    
+      const grossSalary = newBasicPay + daOnBasic + ta + daOnTa + hpca + hra;
+
+      const fixedDeduction = 250;
+      const npsBase = newBasicPay + daOnBasic;
+      const nps = npsBase * 0.10;
+
+      const totalDeductions = fixedDeduction + nps;
+      const netSalary = grossSalary - totalDeductions;
+      
+      return {
+          month,
+          year,
+          newBasicPay: Math.round(newBasicPay),
+          daOnBasic: Math.round(daOnBasic),
+          ta: Math.round(ta),
+          daOnTa: Math.round(daOnTa),
+          hpca: Math.round(hpca),
+          hra: Math.round(hra),
+          grossSalary: Math.round(grossSalary),
+          nps: Math.round(nps),
+          fixedDeduction,
+          totalDeductions: Math.round(totalDeductions),
+          netSalary: Math.round(netSalary),
+      };
+    });
+
+    const totals = monthlyResults.reduce((acc, current) => {
+        acc.newBasicPay += current.newBasicPay;
+        acc.daOnBasic += current.daOnBasic;
+        acc.ta += current.ta;
+        acc.daOnTa += current.daOnTa;
+        acc.hpca += current.hpca;
+        acc.hra += current.hra;
+        acc.grossSalary += current.grossSalary;
+        acc.nps += current.nps;
+        acc.fixedDeduction += current.fixedDeduction;
+        acc.totalDeductions += current.totalDeductions;
+        acc.netSalary += current.netSalary;
+        return acc;
+    }, {
+        newBasicPay: 0,
+        daOnBasic: 0,
+        ta: 0,
+        daOnTa: 0,
+        hpca: 0,
+        hra: 0,
+        grossSalary: 0,
+        nps: 0,
+        fixedDeduction: 0,
+        totalDeductions: 0,
+        netSalary: 0,
+    });
+
     const finalResults: SalaryResultsData = {
-        newBasicPay: Math.round(newBasicPay),
-        daOnBasic: Math.round(daOnBasic),
-        ta: Math.round(ta),
-        daOnTa: Math.round(daOnTa),
-        hpca: Math.round(hpca),
-        hra: Math.round(hra),
-        grossSalary: Math.round(grossSalary),
-        nps: Math.round(nps),
-        fixedDeduction,
-        totalDeductions: Math.round(totalDeductions),
-        netSalary: Math.round(netSalary),
+        monthlyResults,
+        totals,
     };
 
     setTimeout(() => {
@@ -91,7 +129,7 @@ export default function Home() {
         </div>
         <footer className="text-center mt-12 text-sm text-muted-foreground">
           <p>&copy; {new Date().getFullYear()} 7th CPC Salary Calculator. All Rights Reserved.</p>
-          <div className="flex justify-center items-center gap-2 mt-2">
+          <div className="flex justify-center items-center gap-2 mt-2 text-sm">
             <p className="font-credit">Made by Sourav Kumar Rout with</p>
             <svg
               width="16"

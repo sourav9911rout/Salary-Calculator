@@ -5,27 +5,34 @@ const months = [
   "July", "August", "September", "October", "November", "December"
 ] as const;
 
+export const MonthEntrySchema = z.object({
+  month: z.enum(months),
+  year: z.coerce.number(),
+  daysWorked: z.coerce.number({invalid_type_error: "Please enter a valid number"}).min(0, "Days worked cannot be negative").max(31, "Days worked cannot exceed 31"),
+});
 
 export const SalaryFormSchema = z.object({
   payLevel: z.string().min(1, "Pay level is required"),
   basicPay: z.coerce.number({invalid_type_error: "Please enter a valid number"}).positive("Basic pay must be a positive number"),
-  month: z.enum(months),
-  year: z.coerce.number(),
-  daysWorked: z.coerce.number({invalid_type_error: "Please enter a valid number"}).min(0, "Days worked cannot be negative").max(31, "Days worked cannot exceed 31"),
   daPercentage: z.coerce.number({invalid_type_error: "Please enter a valid number"}).min(0, "DA percentage cannot be negative"),
   includeHpca: z.boolean().default(false),
   includeHra: z.boolean().default(false),
   hraPercentage: z.enum(["10", "20", "30"]).optional(),
+  months: z.array(MonthEntrySchema).min(1, "At least one month is required."),
 }).refine(data => {
-  if (data.year && data.month) {
-    const monthIndex = months.indexOf(data.month);
-    const daysInMonth = new Date(data.year, monthIndex + 1, 0).getDate();
-    return data.daysWorked <= daysInMonth;
+  for (const monthEntry of data.months) {
+    if (monthEntry.year && monthEntry.month) {
+      const monthIndex = months.indexOf(monthEntry.month);
+      const daysInMonth = new Date(monthEntry.year, monthIndex + 1, 0).getDate();
+      if (monthEntry.daysWorked > daysInMonth) {
+        return false;
+      }
+    }
   }
   return true;
 }, {
   message: "Days worked cannot exceed days in the selected month",
-  path: ["daysWorked"],
+  path: ["months"],
 }).refine(data => {
     if (data.includeHra) {
         return !!data.hraPercentage;
@@ -38,7 +45,9 @@ export const SalaryFormSchema = z.object({
 
 export type SalaryFormData = z.infer<typeof SalaryFormSchema>;
 
-export type SalaryResultsData = {
+export type MonthlySalaryResult = {
+  month: string;
+  year: number;
   newBasicPay: number;
   daOnBasic: number;
   ta: number;
@@ -50,4 +59,9 @@ export type SalaryResultsData = {
   fixedDeduction: number;
   totalDeductions: number;
   netSalary: number;
+};
+
+export type SalaryResultsData = {
+  monthlyResults: MonthlySalaryResult[];
+  totals: Omit<MonthlySalaryResult, 'month' | 'year'>;
 };

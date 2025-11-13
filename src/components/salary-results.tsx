@@ -2,8 +2,14 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import type { SalaryResultsData } from "@/lib/types";
+import type { SalaryResultsData, MonthlySalaryResult } from "@/lib/types";
 import { Calculator, Loader2 } from "lucide-react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 
 interface SalaryResultsProps {
   results: SalaryResultsData | null;
@@ -20,6 +26,44 @@ const ResultRow = ({ label, value, isSubtle = false }: { label: string; value: s
     <p className={`font-medium ${isSubtle ? 'text-muted-foreground' : 'text-foreground'}`}>{value}</p>
   </div>
 );
+
+const MonthlyBreakdown = ({ result }: { result: MonthlySalaryResult }) => (
+    <div className="space-y-2">
+        <h4 className="font-semibold text-primary mt-4 mb-2">Earnings</h4>
+        <ResultRow label="New Basic Pay" value={formatCurrency(result.newBasicPay)} />
+        <ResultRow label="DA on Basic Pay" value={formatCurrency(result.daOnBasic)} />
+        <ResultRow label="Travelling Allowance (TA)" value={formatCurrency(result.ta)} />
+        <ResultRow label="DA on TA" value={formatCurrency(result.daOnTa)} />
+        <ResultRow label="HPCA" value={formatCurrency(result.hpca)} />
+        <ResultRow label="House Rent Allowance (HRA)" value={formatCurrency(result.hra)} />
+        
+        <Separator className="my-4" />
+        
+        <div className="flex justify-between items-center py-3 text-lg font-bold">
+            <p>Gross Salary</p>
+            <p className="text-primary">{formatCurrency(result.grossSalary)}</p>
+        </div>
+
+        <Separator className="my-4" />
+
+        <h4 className="font-semibold text-destructive mt-4 mb-2">Deductions</h4>
+        <ResultRow label="NPS (10%)" value={formatCurrency(result.nps)} isSubtle />
+        <ResultRow label="Fixed Deduction" value={formatCurrency(result.fixedDeduction)} isSubtle />
+
+        <div className="flex justify-between items-center pt-3 text-md font-semibold">
+            <p>Total Deductions</p>
+            <p className="text-destructive">{formatCurrency(result.totalDeductions)}</p>
+        </div>
+
+        <Separator className="my-4 bg-primary/50 h-[1px] rounded-full" />
+
+        <div className="flex justify-between items-center py-4 text-xl font-extrabold">
+            <p>Net Salary</p>
+            <p className="text-primary">{formatCurrency(result.netSalary)}</p>
+        </div>
+    </div>
+);
+
 
 export function SalaryResults({ results, isCalculating }: SalaryResultsProps) {
   if (isCalculating) {
@@ -54,44 +98,68 @@ export function SalaryResults({ results, isCalculating }: SalaryResultsProps) {
     <Card className="shadow-lg border-2 border-border/60 animate-in fade-in duration-500">
       <CardHeader>
         <CardTitle className="font-headline text-2xl">Salary Breakdown</CardTitle>
-        <CardDescription>Here is a detailed look at your salary calculation.</CardDescription>
+        <CardDescription>
+          {results.monthlyResults.length > 1 
+            ? "Here is a detailed look at your salary calculation for each month and the combined total."
+            : "Here is a detailed look at your salary calculation."
+          }
+        </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="space-y-2">
-            <h4 className="font-semibold text-primary mt-4 mb-2">Earnings</h4>
-            <ResultRow label="New Basic Pay" value={formatCurrency(results.newBasicPay)} />
-            <ResultRow label="DA on Basic Pay" value={formatCurrency(results.daOnBasic)} />
-            <ResultRow label="Travelling Allowance (TA)" value={formatCurrency(results.ta)} />
-            <ResultRow label="DA on TA" value={formatCurrency(results.daOnTa)} />
-            <ResultRow label="HPCA" value={formatCurrency(results.hpca)} />
-            <ResultRow label="House Rent Allowance (HRA)" value={formatCurrency(results.hra)} />
-            
-            <Separator className="my-4" />
-            
-            <div className="flex justify-between items-center py-3 text-lg font-bold">
-                <p>Gross Salary</p>
-                <p className="text-accent">{formatCurrency(results.grossSalary)}</p>
+        {results.monthlyResults.length > 1 && (
+            <Accordion type="single" collapsible className="w-full mb-6" defaultValue="item-0">
+                {results.monthlyResults.map((result, index) => (
+                    <AccordionItem value={`item-${index}`} key={`${result.month}-${result.year}`}>
+                        <AccordionTrigger className="text-lg font-semibold">{result.month} {result.year}</AccordionTrigger>
+                        <AccordionContent>
+                           <MonthlyBreakdown result={result} />
+                        </AccordionContent>
+                    </AccordionItem>
+                ))}
+            </Accordion>
+        )}
+
+        {results.monthlyResults.length === 1 && <MonthlyBreakdown result={results.monthlyResults[0]} />}
+        
+        {results.monthlyResults.length > 1 && (
+            <div className="mt-8 pt-6 border-t-4 border-primary/20">
+                <h3 className="text-2xl font-bold text-accent mb-4">Grand Total</h3>
+                 <div className="space-y-2">
+                    <h4 className="font-semibold text-primary mt-4 mb-2">Total Earnings</h4>
+                    <ResultRow label="Total New Basic Pay" value={formatCurrency(results.totals.newBasicPay)} />
+                    <ResultRow label="Total DA on Basic Pay" value={formatCurrency(results.totals.daOnBasic)} />
+                    <ResultRow label="Total TA" value={formatCurrency(results.totals.ta)} />
+                    <ResultRow label="Total DA on TA" value={formatCurrency(results.totals.daOnTa)} />
+                    <ResultRow label="Total HPCA" value={formatCurrency(results.totals.hpca)} />
+                    <ResultRow label="Total HRA" value={formatCurrency(results.totals.hra)} />
+                    
+                    <Separator className="my-4" />
+                    
+                    <div className="flex justify-between items-center py-3 text-lg font-bold">
+                        <p>Total Gross Salary</p>
+                        <p className="text-accent">{formatCurrency(results.totals.grossSalary)}</p>
+                    </div>
+
+                    <Separator className="my-4" />
+
+                    <h4 className="font-semibold text-destructive mt-4 mb-2">Total Deductions</h4>
+                    <ResultRow label="Total NPS (10%)" value={formatCurrency(results.totals.nps)} isSubtle />
+                    <ResultRow label="Total Fixed Deduction" value={formatCurrency(results.totals.fixedDeduction)} isSubtle />
+
+                    <div className="flex justify-between items-center pt-3 text-md font-semibold">
+                        <p>Grand Total Deductions</p>
+                        <p className="text-destructive">{formatCurrency(results.totals.totalDeductions)}</p>
+                    </div>
+
+                    <Separator className="my-4 bg-accent/50 h-[2px] rounded-full" />
+
+                    <div className="flex justify-between items-center py-4 text-2xl font-extrabold">
+                        <p>Grand Total Net Salary</p>
+                        <p className="text-accent">{formatCurrency(results.totals.netSalary)}</p>
+                    </div>
+                </div>
             </div>
-
-            <Separator className="my-4" />
-
-            <h4 className="font-semibold text-destructive mt-4 mb-2">Deductions</h4>
-            <ResultRow label="NPS (10%)" value={formatCurrency(results.nps)} isSubtle />
-            <ResultRow label="Fixed Deduction" value={formatCurrency(results.fixedDeduction)} isSubtle />
-
-            <div className="flex justify-between items-center pt-3 text-md font-semibold">
-                <p>Total Deductions</p>
-                <p className="text-destructive">{formatCurrency(results.totalDeductions)}</p>
-            </div>
-
-            <Separator className="my-4 bg-primary/50 h-[2px] rounded-full" />
-
-            <div className="flex justify-between items-center py-4 text-xl font-extrabold">
-                <p>Net Salary</p>
-                <p className="text-accent">{formatCurrency(results.netSalary)}</p>
-            </div>
-
-        </div>
+        )}
       </CardContent>
     </Card>
   );

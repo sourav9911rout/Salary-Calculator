@@ -1,9 +1,9 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import { useForm, useFieldArray } from "react-hook-form"
 import type { z } from "zod"
-import { Loader2 } from "lucide-react"
+import { Loader2, PlusCircle, XCircle } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -29,6 +29,7 @@ import { SalaryFormSchema, type SalaryFormData } from "@/lib/types"
 import { payMatrix } from "@/lib/pay-matrix"
 import { useEffect } from "react"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Separator } from "@/components/ui/separator"
 
 interface SalaryFormProps {
   onCalculate: (data: SalaryFormData) => void;
@@ -52,15 +53,22 @@ export function SalaryForm({ onCalculate, isCalculating }: SalaryFormProps) {
     defaultValues: {
       payLevel: "10",
       basicPay: 56100,
-      month: months[new Date().getMonth()],
-      year: new Date().getFullYear(),
-      daysWorked: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate(),
       daPercentage: 50,
       hraPercentage: "30",
       includeHpca: true,
       includeHra: true,
+      months: [{
+        month: months[new Date().getMonth()],
+        year: new Date().getFullYear(),
+        daysWorked: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate(),
+      }]
     },
   })
+
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "months"
+  });
 
   function onSubmit(data: z.infer<typeof SalaryFormSchema>) {
     onCalculate(data);
@@ -69,9 +77,8 @@ export function SalaryForm({ onCalculate, isCalculating }: SalaryFormProps) {
   const hraOptions = ["10", "20", "30"];
 
   const watchPayLevel = form.watch("payLevel");
-  const watchMonth = form.watch("month");
-  const watchYear = form.watch("year");
   const watchIncludeHra = form.watch("includeHra");
+  const watchedMonths = form.watch("months");
 
   const basicPayOptions = payMatrix[watchPayLevel as keyof typeof payMatrix] || [];
 
@@ -81,11 +88,11 @@ export function SalaryForm({ onCalculate, isCalculating }: SalaryFormProps) {
     }
   }, [watchPayLevel, form, basicPayOptions]);
 
-  const handleDateChange = (month: string, year: number) => {
+  const handleDateChange = (month: string, year: number, index: number) => {
     if (month && year) {
         const monthIndex = months.indexOf(month);
         const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
-        form.setValue('daysWorked', daysInMonth);
+        form.setValue(`months.${index}.daysWorked`, daysInMonth);
     }
   }
 
@@ -149,75 +156,107 @@ export function SalaryForm({ onCalculate, isCalculating }: SalaryFormProps) {
               />
             </div>
             
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-               <FormField
-                  control={form.control}
-                  name="month"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Month</FormLabel>
-                       <Select onValueChange={(value) => {
-                           field.onChange(value);
-                           handleDateChange(value, watchYear);
-                       }} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select a month" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {months.map((month) => (
-                            <SelectItem key={month} value={month}>
-                              {month}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                 <FormField
-                  control={form.control}
-                  name="year"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Year</FormLabel>
-                       <Select onValueChange={(value) => {
-                           field.onChange(parseInt(value));
-                           handleDateChange(watchMonth, parseInt(value));
-                       }} defaultValue={field.value.toString()}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select a year" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {years.map((year) => (
-                            <SelectItem key={year} value={year.toString()}>
-                              {year}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="daysWorked"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Days Worked</FormLabel>
-                      <FormControl>
-                        <Input type="number" placeholder="e.g., 30" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+            <Separator />
+            
+            <div className="space-y-4">
+                {fields.map((item, index) => (
+                  <div key={item.id} className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_1fr_auto] gap-4 items-end">
+                     <FormField
+                        control={form.control}
+                        name={`months.${index}.month`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Month</FormLabel>
+                             <Select onValueChange={(value) => {
+                                 field.onChange(value);
+                                 handleDateChange(value, watchedMonths[index].year, index);
+                             }} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select a month" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {months.map((month) => (
+                                  <SelectItem key={month} value={month}>
+                                    {month}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                       <FormField
+                        control={form.control}
+                        name={`months.${index}.year`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Year</FormLabel>
+                             <Select onValueChange={(value) => {
+                                 field.onChange(parseInt(value));
+                                 handleDateChange(watchedMonths[index].month, parseInt(value), index);
+                             }} defaultValue={field.value.toString()}>
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select a year" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {years.map((year) => (
+                                  <SelectItem key={year} value={year.toString()}>
+                                    {year}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name={`months.${index}.daysWorked`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Days Worked</FormLabel>
+                            <FormControl>
+                              <Input type="number" placeholder="e.g., 30" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="text-destructive hover:bg-destructive/10"
+                        onClick={() => remove(index)}
+                        disabled={fields.length <= 1}
+                      >
+                        <XCircle className="h-5 w-5" />
+                        <span className="sr-only">Remove month</span>
+                      </Button>
+                  </div>
+                ))}
+                <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full border-dashed"
+                    onClick={() => append({ 
+                        month: months[new Date().getMonth()], 
+                        year: new Date().getFullYear(), 
+                        daysWorked: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate() 
+                    })}>
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    Add Another Month
+                </Button>
             </div>
+
+            <Separator />
+
 
             <FormField
               control={form.control}
