@@ -31,7 +31,9 @@ export default function Home() {
 
       const newBasicPay = (basicPay / totalDaysInMonth) * daysWorked;
       const daOnBasic = newBasicPay * (daPercentage / 100);
-      const employerContribution = (newBasicPay + daOnBasic) * 0.14;
+      
+      const npsBase = newBasicPay + daOnBasic;
+      const employerContribution = npsBase * 0.14;
       
       let ta = 0;
       if (daysWorked > 15) {
@@ -59,7 +61,6 @@ export default function Home() {
       const grossSalary = newBasicPay + daOnBasic + ta + daOnTa + hpca + hra + employerContribution;
 
       const fixedDeduction = getFixedDeduction(payLevel);
-      const npsBase = newBasicPay + daOnBasic;
       const nps = npsBase * 0.10;
 
       const totalDeductions = fixedDeduction + nps;
@@ -142,7 +143,7 @@ export default function Home() {
         </div>
         <footer className="text-center mt-12 text-sm text-muted-foreground">
           <p>&copy; {new Date().getFullYear()} 7th CPC Salary Calculator. All Rights Reserved.</p>
-          <div className="flex justify-center items-center gap-2 mt-2 text-sm">
+          <div className="flex justify-center items-center gap-2 mt-2 text-xs">
             <p className="font-credit">Made by Sourav Kumar Rout with</p>
             <svg
               width="16"

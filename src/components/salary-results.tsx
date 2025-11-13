@@ -52,7 +52,7 @@ const MonthlyBreakdown = ({ result }: { result: MonthlySalaryResult }) => (
         <Separator className="my-4" />
 
         <h4 className="font-semibold text-destructive mt-4 mb-2">Deductions</h4>
-        <ResultRow label="NPS (Employee Contribution)" value={formatCurrency(result.nps)} isSubtle />
+        <ResultRow label="NPS Employee Contribution (10%)" value={formatCurrency(result.nps)} isSubtle />
         <ResultRow label="EHS Deduction" value={formatCurrency(result.fixedDeduction)} isSubtle />
 
         <div className="flex justify-between items-center pt-3 text-md font-semibold">
@@ -185,7 +185,7 @@ export function SalaryResults({ results, isCalculating }: SalaryResultsProps) {
                     <Separator className="my-4" />
 
                     <h4 className="font-semibold text-destructive mt-4 mb-2">Total Deductions</h4>
-                    <ResultRow label="Total NPS (Employee)" value={formatCurrency(results.totals.nps)} isSubtle />
+                    <ResultRow label="Total NPS Employee Contribution (10%)" value={formatCurrency(results.totals.nps)} isSubtle />
                     <ResultRow label="Total EHS Deduction" value={formatCurrency(results.totals.fixedDeduction)} isSubtle />
 
                     <div className="flex justify-between items-center pt-3 text-md font-semibold">
