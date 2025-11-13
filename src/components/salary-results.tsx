@@ -40,7 +40,6 @@ const MonthlyBreakdown = ({ result }: { result: MonthlySalaryResult }) => (
         <ResultRow label="DA on TA" value={formatCurrency(result.daOnTa)} />
         <ResultRow label="HPCA" value={formatCurrency(result.hpca)} />
         <ResultRow label="House Rent Allowance (HRA)" value={formatCurrency(result.hra)} />
-        <ResultRow label="NPS Employer Contribution" value={formatCurrency(result.employerContribution)} />
         
         <Separator className="my-4" />
         
@@ -53,6 +52,7 @@ const MonthlyBreakdown = ({ result }: { result: MonthlySalaryResult }) => (
 
         <h4 className="font-semibold text-destructive mt-4 mb-2">Deductions</h4>
         <ResultRow label="NPS Employee Contribution (10%)" value={formatCurrency(result.nps)} isSubtle />
+        <ResultRow label="NPS Employer Contribution (14%)" value={formatCurrency(result.employerContribution)} isSubtle />
         <ResultRow label="EHS Deduction" value={formatCurrency(result.fixedDeduction)} isSubtle />
 
         <div className="flex justify-between items-center pt-3 text-md font-semibold">
@@ -169,7 +169,6 @@ export function SalaryResults({ results, isCalculating }: SalaryResultsProps) {
                     <h4 className="font-semibold text-primary mt-4 mb-2">Total Earnings</h4>
                     <ResultRow label="Total New Basic Pay" value={formatCurrency(results.totals.newBasicPay)} />
                     <ResultRow label="Total DA on Basic Pay" value={formatCurrency(results.totals.daOnBasic)} />
-                     <ResultRow label="Total NPS Employer Contribution" value={formatCurrency(results.totals.employerContribution)} />
                     <ResultRow label="Total TA" value={formatCurrency(results.totals.ta)} />
                     <ResultRow label="Total DA on TA" value={formatCurrency(results.totals.daOnTa)} />
                     <ResultRow label="Total HPCA" value={formatCurrency(results.totals.hpca)} />
@@ -186,6 +185,7 @@ export function SalaryResults({ results, isCalculating }: SalaryResultsProps) {
 
                     <h4 className="font-semibold text-destructive mt-4 mb-2">Total Deductions</h4>
                     <ResultRow label="Total NPS Employee Contribution (10%)" value={formatCurrency(results.totals.nps)} isSubtle />
+                    <ResultRow label="Total NPS Employer Contribution (14%)" value={formatCurrency(results.totals.employerContribution)} isSubtle />
                     <ResultRow label="Total EHS Deduction" value={formatCurrency(results.totals.fixedDeduction)} isSubtle />
 
                     <div className="flex justify-between items-center pt-3 text-md font-semibold">
