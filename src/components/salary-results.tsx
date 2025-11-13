@@ -1,15 +1,19 @@
 "use client";
 
+import { useRef } from "react";
+import { jsPDF } from "jspdf";
+import html2canvas from "html2canvas";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
 import type { SalaryResultsData, MonthlySalaryResult } from "@/lib/types";
-import { Calculator, Loader2 } from "lucide-react";
+import { Calculator, Loader2, Download } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion"
+} from "@/components/ui/accordion";
 
 interface SalaryResultsProps {
   results: SalaryResultsData | null;
@@ -36,6 +40,7 @@ const MonthlyBreakdown = ({ result }: { result: MonthlySalaryResult }) => (
         <ResultRow label="DA on TA" value={formatCurrency(result.daOnTa)} />
         <ResultRow label="HPCA" value={formatCurrency(result.hpca)} />
         <ResultRow label="House Rent Allowance (HRA)" value={formatCurrency(result.hra)} />
+        <ResultRow label="NPS Employer Contribution" value={formatCurrency(result.employerContribution)} />
         
         <Separator className="my-4" />
         
@@ -61,16 +66,41 @@ const MonthlyBreakdown = ({ result }: { result: MonthlySalaryResult }) => (
             <p>Net Salary</p>
             <p className="text-primary">{formatCurrency(result.netSalary)}</p>
         </div>
-
-        <Separator className="my-2" />
-
-        <h4 className="font-semibold text-gray-500 dark:text-gray-400 mt-4 mb-2">Other Contributions</h4>
-         <ResultRow label="NPS Employer Contribution" value={formatCurrency(result.employerContribution)} isSubtle />
     </div>
 );
 
 
 export function SalaryResults({ results, isCalculating }: SalaryResultsProps) {
+  const resultsRef = useRef<HTMLDivElement>(null);
+
+  const handleDownloadPdf = () => {
+    const input = resultsRef.current;
+    if (input) {
+      const originalDisplay = input.style.display;
+      input.style.display = 'block';
+
+      html2canvas(input, { scale: 2 }).then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        const imgWidth = canvas.width;
+        const imgHeight = canvas.height;
+        const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+        const imgX = (pdfWidth - imgWidth * ratio) / 2;
+        const imgY = 15;
+        
+        pdf.setFontSize(20);
+        pdf.text('7th CPC Salary Calculation', pdfWidth / 2, 10, { align: 'center' });
+        pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
+        
+        pdf.save("salary-breakdown.pdf");
+        
+        input.style.display = originalDisplay;
+      });
+    }
+  };
+
   if (isCalculating) {
     return (
       <Card className="shadow-lg border-2 border-border/60 min-h-[500px] flex items-center justify-center">
@@ -101,16 +131,22 @@ export function SalaryResults({ results, isCalculating }: SalaryResultsProps) {
 
   return (
     <Card className="shadow-lg border-2 border-border/60 animate-in fade-in duration-500">
-      <CardHeader>
-        <CardTitle className="font-headline text-2xl">Salary Breakdown</CardTitle>
-        <CardDescription>
-          {results.monthlyResults.length > 1 
-            ? "Here is a detailed look at your salary calculation for each month and the combined total."
-            : "Here is a detailed look at your salary calculation."
-          }
-        </CardDescription>
+      <CardHeader className="flex flex-row items-center justify-between">
+        <div>
+            <CardTitle className="font-headline text-2xl">Salary Breakdown</CardTitle>
+            <CardDescription>
+            {results.monthlyResults.length > 1 
+                ? "Here is a detailed look at your salary calculation for each month and the combined total."
+                : "Here is a detailed look at your salary calculation."
+            }
+            </CardDescription>
+        </div>
+        <Button onClick={handleDownloadPdf} variant="outline" size="sm">
+            <Download className="mr-2 h-4 w-4" />
+            Download PDF
+        </Button>
       </CardHeader>
-      <CardContent>
+      <CardContent ref={resultsRef}>
         {results.monthlyResults.length > 1 && (
             <Accordion type="single" collapsible className="w-full mb-6" defaultValue="item-0">
                 {results.monthlyResults.map((result, index) => (
@@ -133,6 +169,7 @@ export function SalaryResults({ results, isCalculating }: SalaryResultsProps) {
                     <h4 className="font-semibold text-primary mt-4 mb-2">Total Earnings</h4>
                     <ResultRow label="Total New Basic Pay" value={formatCurrency(results.totals.newBasicPay)} />
                     <ResultRow label="Total DA on Basic Pay" value={formatCurrency(results.totals.daOnBasic)} />
+                     <ResultRow label="Total NPS Employer Contribution" value={formatCurrency(results.totals.employerContribution)} />
                     <ResultRow label="Total TA" value={formatCurrency(results.totals.ta)} />
                     <ResultRow label="Total DA on TA" value={formatCurrency(results.totals.daOnTa)} />
                     <ResultRow label="Total HPCA" value={formatCurrency(results.totals.hpca)} />
@@ -162,10 +199,6 @@ export function SalaryResults({ results, isCalculating }: SalaryResultsProps) {
                         <p>Grand Total Net Salary</p>
                         <p className="text-accent">{formatCurrency(results.totals.netSalary)}</p>
                     </div>
-
-                    <Separator className="my-4" />
-                    <h4 className="font-semibold text-gray-500 dark:text-gray-400 mt-4 mb-2">Total Other Contributions</h4>
-                    <ResultRow label="Total NPS Employer Contribution" value={formatCurrency(results.totals.employerContribution)} isSubtle />
                 </div>
             </div>
         )}
