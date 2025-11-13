@@ -33,6 +33,7 @@ export default function Home() {
       const daOnBasic = newBasicPay * (daPercentage / 100);
       
       const npsBase = newBasicPay + daOnBasic;
+      const nps = npsBase * 0.10;
       const employerContribution = npsBase * 0.14;
       
       let ta = 0;
@@ -58,13 +59,12 @@ export default function Home() {
         hra = newBasicPay * (parseInt(hraPercentage) / 100);
       }
 
-      const grossSalary = newBasicPay + daOnBasic + ta + daOnTa + hpca + hra + employerContribution;
+      const grossSalary = newBasicPay + daOnBasic + ta + daOnTa + hpca + hra + employerContribution + nps;
 
       const fixedDeduction = getFixedDeduction(payLevel);
-      const nps = npsBase * 0.10;
-
+      
       const totalDeductions = fixedDeduction + nps + employerContribution;
-      const netSalary = grossSalary - fixedDeduction - nps - employerContribution;
+      const netSalary = grossSalary - totalDeductions;
       
       return {
           month,

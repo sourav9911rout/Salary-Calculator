@@ -40,6 +40,7 @@ const MonthlyBreakdown = ({ result }: { result: MonthlySalaryResult }) => (
         <ResultRow label="DA on TA" value={formatCurrency(result.daOnTa)} />
         <ResultRow label="HPCA" value={formatCurrency(result.hpca)} />
         <ResultRow label="House Rent Allowance (HRA)" value={formatCurrency(result.hra)} />
+        <ResultRow label="NPS (10%)" value={formatCurrency(result.nps)} />
         <ResultRow label="NPS Employer Contribution" value={formatCurrency(result.employerContribution)} />
         
         <Separator className="my-4" />
@@ -174,6 +175,7 @@ export function SalaryResults({ results, isCalculating }: SalaryResultsProps) {
                     <ResultRow label="Total DA on TA" value={formatCurrency(results.totals.daOnTa)} />
                     <ResultRow label="Total HPCA" value={formatCurrency(results.totals.hpca)} />
                     <ResultRow label="Total HRA" value={formatCurrency(results.totals.hra)} />
+                    <ResultRow label="Total NPS (10%)" value={formatCurrency(results.totals.nps)} />
                     <ResultRow label="Total NPS Employer Contribution" value={formatCurrency(results.totals.employerContribution)} />
                     
                     <Separator className="my-4" />
