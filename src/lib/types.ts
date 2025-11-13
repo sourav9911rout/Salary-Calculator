@@ -56,6 +56,7 @@ export type MonthlySalaryResult = {
   hpca: number;
   hra: number;
   grossSalary: number;
+  totalEarnings: number;
   nps: number;
   fixedDeduction: number;
   totalDeductions: number;
