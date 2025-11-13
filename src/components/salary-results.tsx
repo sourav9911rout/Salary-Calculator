@@ -32,7 +32,7 @@ const MonthlyBreakdown = ({ result }: { result: MonthlySalaryResult }) => (
         <h4 className="font-semibold text-primary mt-4 mb-2">Earnings</h4>
         <ResultRow label="New Basic Pay" value={formatCurrency(result.newBasicPay)} />
         <ResultRow label="DA on Basic Pay" value={formatCurrency(result.daOnBasic)} />
-        <ResultRow label="Employer Contribution" value={formatCurrency(result.employerContribution)} />
+        <ResultRow label="NPS Employer Contribution" value={formatCurrency(result.employerContribution)} />
         <ResultRow label="Travelling Allowance (TA)" value={formatCurrency(result.ta)} />
         <ResultRow label="DA on TA" value={formatCurrency(result.daOnTa)} />
         <ResultRow label="HPCA" value={formatCurrency(result.hpca)} />
@@ -129,7 +129,7 @@ export function SalaryResults({ results, isCalculating }: SalaryResultsProps) {
                     <h4 className="font-semibold text-primary mt-4 mb-2">Total Earnings</h4>
                     <ResultRow label="Total New Basic Pay" value={formatCurrency(results.totals.newBasicPay)} />
                     <ResultRow label="Total DA on Basic Pay" value={formatCurrency(results.totals.daOnBasic)} />
-                    <ResultRow label="Total Employer Contribution" value={formatCurrency(results.totals.employerContribution)} />
+                    <ResultRow label="Total NPS Employer Contribution" value={formatCurrency(results.totals.employerContribution)} />
                     <ResultRow label="Total TA" value={formatCurrency(results.totals.ta)} />
                     <ResultRow label="Total DA on TA" value={formatCurrency(results.totals.daOnTa)} />
                     <ResultRow label="Total HPCA" value={formatCurrency(results.totals.hpca)} />
@@ -146,7 +146,7 @@ export function SalaryResults({ results, isCalculating }: SalaryResultsProps) {
 
                     <h4 className="font-semibold text-destructive mt-4 mb-2">Total Deductions</h4>
                     <ResultRow label="Total NPS (10%)" value={formatCurrency(results.totals.nps)} isSubtle />
-                    <ResultRow label="Total Fixed Deduction" value={formatCurrency(results.totals.fixedDeduction)} isSubtle />
+                    <ResultRow label="Total Fixed Deduction" value={formatcurrency(results.totals.fixedDeduction)} isSubtle />
 
                     <div className="flex justify-between items-center pt-3 text-md font-semibold">
                         <p>Grand Total Deductions</p>

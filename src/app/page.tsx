@@ -22,7 +22,7 @@ export default function Home() {
 
       const newBasicPay = (basicPay / totalDaysInMonth) * daysWorked;
       const daOnBasic = newBasicPay * (daPercentage / 100);
-      const employerContribution = newBasicPay * 0.14;
+      const employerContribution = (newBasicPay + daOnBasic) * 0.14;
       
       let ta = 0;
       if (daysWorked > 15) {
