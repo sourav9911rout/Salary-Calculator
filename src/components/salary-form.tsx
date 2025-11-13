@@ -51,8 +51,8 @@ export function SalaryForm({ onCalculate, isCalculating }: SalaryFormProps) {
   const form = useForm<z.infer<typeof SalaryFormSchema>>({
     resolver: zodResolver(SalaryFormSchema),
     defaultValues: {
-      payLevel: "10",
-      basicPay: 56100,
+      payLevel: "5",
+      basicPay: 29200,
       daPercentage: 50,
       hraPercentage: "30",
       includeHpca: true,
