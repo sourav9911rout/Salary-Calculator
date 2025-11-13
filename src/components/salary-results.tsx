@@ -32,7 +32,7 @@ const MonthlyBreakdown = ({ result }: { result: MonthlySalaryResult }) => (
         <h4 className="font-semibold text-primary mt-4 mb-2">Earnings</h4>
         <ResultRow label="New Basic Pay" value={formatCurrency(result.newBasicPay)} />
         <ResultRow label="DA on Basic Pay" value={formatCurrency(result.daOnBasic)} />
-        <ResultRow label="Employer Contribution (14%)" value={formatCurrency(result.employerContribution)} />
+        <ResultRow label="Employer Contribution" value={formatCurrency(result.employerContribution)} />
         <ResultRow label="Travelling Allowance (TA)" value={formatCurrency(result.ta)} />
         <ResultRow label="DA on TA" value={formatCurrency(result.daOnTa)} />
         <ResultRow label="HPCA" value={formatCurrency(result.hpca)} />
