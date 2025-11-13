@@ -149,7 +149,7 @@ export function SalaryForm({ onCalculate, isCalculating }: SalaryFormProps) {
               />
             </div>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                <FormField
                   control={form.control}
                   name="month"
@@ -204,20 +204,20 @@ export function SalaryForm({ onCalculate, isCalculating }: SalaryFormProps) {
                     </FormItem>
                   )}
                 />
+                <FormField
+                  control={form.control}
+                  name="daysWorked"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Days Worked</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="e.g., 30" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
             </div>
-            <FormField
-              control={form.control}
-              name="daysWorked"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Days Worked</FormLabel>
-                  <FormControl>
-                    <Input type="number" placeholder="e.g., 30" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
             <FormField
               control={form.control}
