@@ -9,11 +9,20 @@ export default function Home() {
   const [results, setResults] = useState<SalaryResultsData | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
 
+  const getFixedDeduction = (payLevel: string): number => {
+    const level = parseInt(payLevel.replace('A', ''));
+    if (level <= 5) return 250;
+    if (level === 6) return 450;
+    if (level >= 7 && level <= 11) return 650;
+    if (level >= 12) return 1000;
+    return 250;
+  };
+
   const handleCalculate = (data: SalaryFormData) => {
     setIsCalculating(true);
     setResults(null);
 
-    const { basicPay, daPercentage, hraPercentage, includeHpca, includeHra, months } = data;
+    const { basicPay, daPercentage, hraPercentage, includeHpca, includeHra, months, payLevel } = data;
     
     const monthlyResults: MonthlySalaryResult[] = months.map(monthEntry => {
       const { month, year, daysWorked } = monthEntry;
@@ -47,9 +56,9 @@ export default function Home() {
         hra = newBasicPay * (parseInt(hraPercentage) / 100);
       }
 
-      const grossSalary = newBasicPay + daOnBasic + ta + daOnTa + hpca + hra + employerContribution;
+      const grossSalary = newBasicPay + daOnBasic + ta + daOnTa + hpca + hra;
 
-      const fixedDeduction = 250;
+      const fixedDeduction = getFixedDeduction(payLevel);
       const npsBase = newBasicPay + daOnBasic;
       const nps = npsBase * 0.10;
 

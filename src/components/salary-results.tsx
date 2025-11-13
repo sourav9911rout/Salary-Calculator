@@ -32,7 +32,6 @@ const MonthlyBreakdown = ({ result }: { result: MonthlySalaryResult }) => (
         <h4 className="font-semibold text-primary mt-4 mb-2">Earnings</h4>
         <ResultRow label="New Basic Pay" value={formatCurrency(result.newBasicPay)} />
         <ResultRow label="DA on Basic Pay" value={formatCurrency(result.daOnBasic)} />
-        <ResultRow label="NPS Employer Contribution" value={formatCurrency(result.employerContribution)} />
         <ResultRow label="Travelling Allowance (TA)" value={formatCurrency(result.ta)} />
         <ResultRow label="DA on TA" value={formatCurrency(result.daOnTa)} />
         <ResultRow label="HPCA" value={formatCurrency(result.hpca)} />
@@ -48,8 +47,8 @@ const MonthlyBreakdown = ({ result }: { result: MonthlySalaryResult }) => (
         <Separator className="my-4" />
 
         <h4 className="font-semibold text-destructive mt-4 mb-2">Deductions</h4>
-        <ResultRow label="NPS (10%)" value={formatCurrency(result.nps)} isSubtle />
-        <ResultRow label="Fixed Deduction" value={formatCurrency(result.fixedDeduction)} isSubtle />
+        <ResultRow label="NPS (Employee Contribution)" value={formatCurrency(result.nps)} isSubtle />
+        <ResultRow label="EHS Deduction" value={formatCurrency(result.fixedDeduction)} isSubtle />
 
         <div className="flex justify-between items-center pt-3 text-md font-semibold">
             <p>Total Deductions</p>
@@ -62,6 +61,11 @@ const MonthlyBreakdown = ({ result }: { result: MonthlySalaryResult }) => (
             <p>Net Salary</p>
             <p className="text-primary">{formatCurrency(result.netSalary)}</p>
         </div>
+
+        <Separator className="my-2" />
+
+        <h4 className="font-semibold text-gray-500 dark:text-gray-400 mt-4 mb-2">Other Contributions</h4>
+         <ResultRow label="NPS Employer Contribution" value={formatCurrency(result.employerContribution)} isSubtle />
     </div>
 );
 
@@ -129,7 +133,6 @@ export function SalaryResults({ results, isCalculating }: SalaryResultsProps) {
                     <h4 className="font-semibold text-primary mt-4 mb-2">Total Earnings</h4>
                     <ResultRow label="Total New Basic Pay" value={formatCurrency(results.totals.newBasicPay)} />
                     <ResultRow label="Total DA on Basic Pay" value={formatCurrency(results.totals.daOnBasic)} />
-                    <ResultRow label="Total NPS Employer Contribution" value={formatCurrency(results.totals.employerContribution)} />
                     <ResultRow label="Total TA" value={formatCurrency(results.totals.ta)} />
                     <ResultRow label="Total DA on TA" value={formatCurrency(results.totals.daOnTa)} />
                     <ResultRow label="Total HPCA" value={formatCurrency(results.totals.hpca)} />
@@ -145,8 +148,8 @@ export function SalaryResults({ results, isCalculating }: SalaryResultsProps) {
                     <Separator className="my-4" />
 
                     <h4 className="font-semibold text-destructive mt-4 mb-2">Total Deductions</h4>
-                    <ResultRow label="Total NPS (10%)" value={formatCurrency(results.totals.nps)} isSubtle />
-                    <ResultRow label="Total Fixed Deduction" value={formatcurrency(results.totals.fixedDeduction)} isSubtle />
+                    <ResultRow label="Total NPS (Employee)" value={formatCurrency(results.totals.nps)} isSubtle />
+                    <ResultRow label="Total EHS Deduction" value={formatCurrency(results.totals.fixedDeduction)} isSubtle />
 
                     <div className="flex justify-between items-center pt-3 text-md font-semibold">
                         <p>Grand Total Deductions</p>
@@ -159,6 +162,10 @@ export function SalaryResults({ results, isCalculating }: SalaryResultsProps) {
                         <p>Grand Total Net Salary</p>
                         <p className="text-accent">{formatCurrency(results.totals.netSalary)}</p>
                     </div>
+
+                    <Separator className="my-4" />
+                    <h4 className="font-semibold text-gray-500 dark:text-gray-400 mt-4 mb-2">Total Other Contributions</h4>
+                    <ResultRow label="Total NPS Employer Contribution" value={formatCurrency(results.totals.employerContribution)} isSubtle />
                 </div>
             </div>
         )}
