@@ -18,11 +18,25 @@ export default function Home() {
     return 250;
   };
 
+  const getTaAmount = (payLevel: string, taType: 'higher' | 'other'): number => {
+    const level = parseInt(payLevel.replace('A', ''));
+    if (taType === 'higher') {
+      if (level >= 9) return 7200;
+      if (level >= 3) return 3600;
+      return 1350;
+    } else { // other
+      if (level >= 9) return 3600;
+      if (level >= 3) return 1800;
+      return 900;
+    }
+  };
+
+
   const handleCalculate = (data: SalaryFormData) => {
     setIsCalculating(true);
     setResults(null);
 
-    const { basicPay, daPercentage, hraPercentage, includeHpca, includeHra, months, payLevel } = data;
+    const { basicPay, daPercentage, hraPercentage, includeHpca, includeHra, months, payLevel, taType } = data;
     
     const monthlyResults: MonthlySalaryResult[] = months.map(monthEntry => {
       const { month, year, daysWorked } = monthEntry;
@@ -36,11 +50,12 @@ export default function Home() {
       const nps = npsBase * 0.10;
       const employerContribution = npsBase * 0.14;
       
+      let baseTa = getTaAmount(payLevel, taType);
       let ta = 0;
       if (daysWorked > 15) {
-        ta = 3600;
+        ta = baseTa;
       } else {
-        ta = (3600 / totalDaysInMonth) * daysWorked;
+        ta = (baseTa / totalDaysInMonth) * daysWorked;
       }
 
       const daOnTa = ta * (daPercentage / 100);
@@ -64,7 +79,7 @@ export default function Home() {
       const fixedDeduction = getFixedDeduction(payLevel);
       
       const totalDeductions = nps + employerContribution + fixedDeduction;
-      const netSalary = grossSalary - (nps + employerContribution + fixedDeduction);
+      const netSalary = grossSalary - totalDeductions;
       
       return {
           month,

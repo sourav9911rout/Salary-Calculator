@@ -54,6 +54,7 @@ export function SalaryForm({ onCalculate, isCalculating }: SalaryFormProps) {
       payLevel: "5",
       basicPay: 29200,
       daPercentage: 50,
+      taType: "other",
       hraPercentage: "30",
       includeHpca: true,
       includeHra: true,
@@ -75,6 +76,11 @@ export function SalaryForm({ onCalculate, isCalculating }: SalaryFormProps) {
   }
 
   const hraOptions = ["10", "20", "30"];
+  const taOptions = [
+    { value: "higher", label: "Higher TPTA Cities" },
+    { value: "other", label: "Other Places" }
+  ];
+
 
   const watchPayLevel = form.watch("payLevel");
   const watchIncludeHra = form.watch("includeHra");
@@ -266,6 +272,35 @@ export function SalaryForm({ onCalculate, isCalculating }: SalaryFormProps) {
                   <FormLabel>DA Percentage (%)</FormLabel>
                   <FormControl>
                     <Input type="number" placeholder="e.g., 50" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <FormField
+              control={form.control}
+              name="taType"
+              render={({ field }) => (
+                <FormItem className="space-y-3">
+                  <FormLabel>Transport Allowance City Type</FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-6"
+                    >
+                      {taOptions.map((option) => (
+                        <FormItem key={option.value} className="flex items-center space-x-3 space-y-0">
+                          <FormControl>
+                            <RadioGroupItem value={option.value} />
+                          </FormControl>
+                          <FormLabel className="font-normal">
+                            {option.label}
+                          </FormLabel>
+                        </FormItem>
+                      ))}
+                    </RadioGroup>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
