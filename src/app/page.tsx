@@ -64,7 +64,7 @@ export default function Home() {
       const fixedDeduction = getFixedDeduction(payLevel);
       
       const totalDeductions = nps + employerContribution + fixedDeduction;
-      const netSalary = grossSalary - totalDeductions;
+      const netSalary = grossSalary - (nps + employerContribution + fixedDeduction);
       
       return {
           month,
