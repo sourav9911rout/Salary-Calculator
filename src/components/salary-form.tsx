@@ -1,3 +1,4 @@
+
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -53,7 +54,7 @@ export function SalaryForm({ onCalculate, isCalculating }: SalaryFormProps) {
     defaultValues: {
       payLevel: "5",
       basicPay: 29200,
-      daPercentage: 50,
+      daPercentage: 58,
       taType: "other",
       hraPercentage: "30",
       includeHpca: true,
