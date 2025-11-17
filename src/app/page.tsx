@@ -50,23 +50,15 @@ export default function Home() {
       const nps = npsBase * 0.10;
       const employerContribution = npsBase * 0.14;
       
-      let baseTa = getTaAmount(payLevel, taType);
-      let ta = 0;
-      if (daysWorked > 15) {
-        ta = baseTa;
-      } else {
-        ta = (baseTa / totalDaysInMonth) * daysWorked;
-      }
+      const baseTa = getTaAmount(payLevel, taType);
+      const ta = (baseTa / totalDaysInMonth) * daysWorked;
 
       const daOnTa = ta * (daPercentage / 100);
 
       let hpca = 0;
       if (includeHpca) {
-        if (daysWorked > 15) {
-          hpca = 5125;
-        } else {
-          hpca = (5125 / totalDaysInMonth) * daysWorked;
-        }
+          const baseHpca = 5125;
+          hpca = (baseHpca / totalDaysInMonth) * daysWorked;
       }
       
       let hra = 0;
