@@ -48,7 +48,12 @@ const years = Array.from({ length: currentYear - 2016 + 2 }, (_, i) => 2016 + i)
 
 const payLevels = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "13A", "14"];
 
-const sortedCities = [...cities].sort((a, b) => a.name.localeCompare(b.name));
+const otherCity = cities.find(c => c.name === 'Other Cities');
+const sortedCities = [
+  ...cities.filter(c => c.name !== 'Other Cities').sort((a, b) => a.name.localeCompare(b.name)),
+  ...(otherCity ? [otherCity] : [])
+];
+
 
 export function SalaryForm({ onCalculate, isCalculating }: SalaryFormProps) {
   const form = useForm<z.infer<typeof SalaryFormSchema>>({

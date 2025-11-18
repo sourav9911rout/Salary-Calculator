@@ -21,6 +21,6 @@ export const higherTptaCities: string[] = [
 ];
 
 export const allTaCities: string[] = [
-    ...higherTptaCities,
+    ...higherTptaCities.sort(),
     "Other Places"
-].sort();
+];
