@@ -4,6 +4,7 @@ import { useState } from "react";
 import { SalaryForm } from "@/components/salary-form";
 import { SalaryResults } from "@/components/salary-results";
 import type { SalaryFormData, SalaryResultsData, MonthlySalaryResult } from "@/lib/types";
+import { cities } from "@/lib/cities";
 
 export default function Home() {
   const [results, setResults] = useState<SalaryResultsData | null>(null);
@@ -31,12 +32,20 @@ export default function Home() {
     }
   };
 
+  const getHraPercentage = (city: string): number => {
+    const selectedCity = cities.find(c => c.name === city);
+    if (!selectedCity) return 10; // Default to Z category
+    if (selectedCity.category === 'X') return 30;
+    if (selectedCity.category === 'Y') return 20;
+    return 10; // Z category
+  }
+
 
   const handleCalculate = (data: SalaryFormData) => {
     setIsCalculating(true);
     setResults(null);
 
-    const { basicPay, daPercentage, hraPercentage, includeHpca, includeHra, months, payLevel, taType } = data;
+    const { basicPay, daPercentage, includeHpca, includeHra, months, payLevel, taType, city } = data;
     
     const monthlyResults: MonthlySalaryResult[] = months.map(monthEntry => {
       const { month, year, daysWorked } = monthEntry;
@@ -62,8 +71,9 @@ export default function Home() {
       }
       
       let hra = 0;
-      if (includeHra && hraPercentage) {
-        hra = newBasicPay * (parseInt(hraPercentage) / 100);
+      if (includeHra) {
+        const hraPercentage = getHraPercentage(city);
+        hra = newBasicPay * (hraPercentage / 100);
       }
 
       const grossSalary = newBasicPay + daOnBasic + ta + daOnTa + hpca + hra + employerContribution;

@@ -18,7 +18,7 @@ export const SalaryFormSchema = z.object({
   taType: z.enum(["higher", "other"]),
   includeHpca: z.boolean().default(false),
   includeHra: z.boolean().default(false),
-  hraPercentage: z.enum(["10", "20", "30"]).optional(),
+  city: z.string().min(1, "City is required when HRA is included"),
   months: z.array(MonthEntrySchema).min(1, "At least one month is required."),
 }).refine(data => {
   for (const monthEntry of data.months) {
@@ -34,14 +34,6 @@ export const SalaryFormSchema = z.object({
 }, {
   message: "Days worked cannot exceed days in the selected month",
   path: ["months"],
-}).refine(data => {
-    if (data.includeHra) {
-        return !!data.hraPercentage;
-    }
-    return true;
-}, {
-    message: "You need to select an HRA option when HRA is included.",
-    path: ["hraPercentage"],
 });
 
 export type SalaryFormData = z.infer<typeof SalaryFormSchema>;

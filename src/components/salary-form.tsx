@@ -28,9 +28,10 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { SalaryFormSchema, type SalaryFormData } from "@/lib/types"
 import { payMatrix } from "@/lib/pay-matrix"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Separator } from "@/components/ui/separator"
+import { cities } from "@/lib/cities"
 
 interface SalaryFormProps {
   onCalculate: (data: SalaryFormData) => void;
@@ -47,6 +48,7 @@ const years = Array.from({ length: currentYear - 2016 + 2 }, (_, i) => 2016 + i)
 
 const payLevels = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "13A", "14"];
 
+const sortedCities = [...cities].sort((a, b) => a.name.localeCompare(b.name));
 
 export function SalaryForm({ onCalculate, isCalculating }: SalaryFormProps) {
   const form = useForm<z.infer<typeof SalaryFormSchema>>({
@@ -56,7 +58,7 @@ export function SalaryForm({ onCalculate, isCalculating }: SalaryFormProps) {
       basicPay: 29200,
       daPercentage: 58,
       taType: "other",
-      hraPercentage: "30",
+      city: "Other Cities",
       includeHpca: true,
       includeHra: true,
       months: [{
@@ -76,7 +78,6 @@ export function SalaryForm({ onCalculate, isCalculating }: SalaryFormProps) {
     onCalculate(data);
   }
 
-  const hraOptions = ["10", "20", "30"];
   const taOptions = [
     { value: "higher", label: "Higher TPTA Cities" },
     { value: "other", label: "Other Places" }
@@ -86,6 +87,14 @@ export function SalaryForm({ onCalculate, isCalculating }: SalaryFormProps) {
   const watchPayLevel = form.watch("payLevel");
   const watchIncludeHra = form.watch("includeHra");
   const watchedMonths = form.watch("months");
+  const watchCity = form.watch("city");
+  
+  const [cityCategory, setCityCategory] = useState("Z");
+
+  useEffect(() => {
+    const selectedCity = cities.find(c => c.name === watchCity);
+    setCityCategory(selectedCity ? selectedCity.category : "Z");
+  }, [watchCity]);
 
   const basicPayOptions = payMatrix[watchPayLevel as keyof typeof payMatrix] || [];
 
@@ -346,34 +355,36 @@ export function SalaryForm({ onCalculate, isCalculating }: SalaryFormProps) {
             </div>
             
             {watchIncludeHra && (
-              <FormField
-                control={form.control}
-                name="hraPercentage"
-                render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormLabel>HRA Option</FormLabel>
-                    <FormControl>
-                      <RadioGroup
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                        className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-6"
-                      >
-                        {hraOptions.map((option) => (
-                          <FormItem key={option} className="flex items-center space-x-3 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem value={option} />
-                            </FormControl>
-                            <FormLabel className="font-normal">
-                              {option}%
-                            </FormLabel>
-                          </FormItem>
-                        ))}
-                      </RadioGroup>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="grid grid-cols-1 sm:grid-cols-[2fr_1fr] gap-4">
+                <FormField
+                  control={form.control}
+                  name="city"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>HRA City</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a city" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {sortedCities.map((city) => (
+                            <SelectItem key={city.name} value={city.name}>
+                              {city.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormItem>
+                  <FormLabel>City Category</FormLabel>
+                  <Input value={cityCategory} disabled className="font-bold text-center" />
+                </FormItem>
+              </div>
             )}
             
             <Button type="submit" disabled={isCalculating} className="w-full bg-accent hover:bg-accent/90 text-accent-foreground">
