@@ -24,7 +24,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { SalaryFormSchema, type SalaryFormData } from "@/lib/types"
 import { payMatrix } from "@/lib/pay-matrix"
@@ -32,6 +31,7 @@ import { useEffect, useState } from "react"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Separator } from "@/components/ui/separator"
 import { cities } from "@/lib/cities"
+import { allTaCities } from "@/lib/ta-cities"
 
 interface SalaryFormProps {
   onCalculate: (data: SalaryFormData) => void;
@@ -57,7 +57,7 @@ export function SalaryForm({ onCalculate, isCalculating }: SalaryFormProps) {
       payLevel: "5",
       basicPay: 29200,
       daPercentage: 58,
-      taType: "other",
+      taCity: "Other Places",
       city: "Other Cities",
       includeHpca: true,
       includeHra: true,
@@ -77,12 +77,6 @@ export function SalaryForm({ onCalculate, isCalculating }: SalaryFormProps) {
   function onSubmit(data: z.infer<typeof SalaryFormSchema>) {
     onCalculate(data);
   }
-
-  const taOptions = [
-    { value: "higher", label: "Higher TPTA Cities" },
-    { value: "other", label: "Other Places" }
-  ];
-
 
   const watchPayLevel = form.watch("payLevel");
   const watchIncludeHra = form.watch("includeHra");
@@ -290,28 +284,24 @@ export function SalaryForm({ onCalculate, isCalculating }: SalaryFormProps) {
             
             <FormField
               control={form.control}
-              name="taType"
+              name="taCity"
               render={({ field }) => (
-                <FormItem className="space-y-3">
-                  <FormLabel>Transport Allowance City Type</FormLabel>
-                  <FormControl>
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-6"
-                    >
-                      {taOptions.map((option) => (
-                        <FormItem key={option.value} className="flex items-center space-x-3 space-y-0">
-                          <FormControl>
-                            <RadioGroupItem value={option.value} />
-                          </FormControl>
-                          <FormLabel className="font-normal">
-                            {option.label}
-                          </FormLabel>
-                        </FormItem>
+                <FormItem>
+                  <FormLabel>Transport Allowance City</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a city for TA" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {allTaCities.map((city) => (
+                        <SelectItem key={city} value={city}>
+                          {city}
+                        </SelectItem>
                       ))}
-                    </RadioGroup>
-                  </FormControl>
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

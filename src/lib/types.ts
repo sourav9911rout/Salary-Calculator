@@ -15,7 +15,7 @@ export const SalaryFormSchema = z.object({
   payLevel: z.string().min(1, "Pay level is required"),
   basicPay: z.coerce.number({invalid_type_error: "Please enter a valid number"}).positive("Basic pay must be a positive number"),
   daPercentage: z.coerce.number({invalid_type_error: "Please enter a valid number"}).min(0, "DA percentage cannot be negative"),
-  taType: z.enum(["higher", "other"]),
+  taCity: z.string().min(1, "Transport Allowance city is required"),
   includeHpca: z.boolean().default(false),
   includeHra: z.boolean().default(false),
   city: z.string().min(1, "City is required when HRA is included"),

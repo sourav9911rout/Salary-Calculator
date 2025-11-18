@@ -5,6 +5,7 @@ import { SalaryForm } from "@/components/salary-form";
 import { SalaryResults } from "@/components/salary-results";
 import type { SalaryFormData, SalaryResultsData, MonthlySalaryResult } from "@/lib/types";
 import { cities } from "@/lib/cities";
+import { higherTptaCities } from "@/lib/ta-cities";
 
 export default function Home() {
   const [results, setResults] = useState<SalaryResultsData | null>(null);
@@ -45,8 +46,10 @@ export default function Home() {
     setIsCalculating(true);
     setResults(null);
 
-    const { basicPay, daPercentage, includeHpca, includeHra, months, payLevel, taType, city } = data;
+    const { basicPay, daPercentage, includeHpca, includeHra, months, payLevel, taCity, city } = data;
     
+    const taType = higherTptaCities.includes(taCity) ? 'higher' : 'other';
+
     const monthlyResults: MonthlySalaryResult[] = months.map(monthEntry => {
       const { month, year, daysWorked } = monthEntry;
       const monthIndex = new Date(Date.parse(month +" 1, 2012")).getMonth();
