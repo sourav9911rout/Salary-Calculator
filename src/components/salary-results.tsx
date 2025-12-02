@@ -39,6 +39,7 @@ const MonthlyBreakdown = ({ result }: { result: MonthlySalaryResult }) => (
         <ResultRow label="Travelling Allowance (TA)" value={formatCurrency(result.ta)} />
         <ResultRow label="DA on TA" value={formatCurrency(result.daOnTa)} />
         <ResultRow label="HPCA" value={formatCurrency(result.hpca)} />
+        <ResultRow label="Special Duty Allowance (SDA)" value={formatCurrency(result.sda)} />
         <ResultRow label="House Rent Allowance (HRA)" value={formatCurrency(result.hra)} />
         <ResultRow label="NPS Employer Contribution" value={formatCurrency(result.employerContribution)} isSubtle/>
         <Separator/>
@@ -171,6 +172,7 @@ export function SalaryResults({ results, isCalculating }: SalaryResultsProps) {
                     <ResultRow label="Total TA" value={formatCurrency(results.totals.ta)} />
                     <ResultRow label="Total DA on TA" value={formatCurrency(results.totals.daOnTa)} />
                     <ResultRow label="Total HPCA" value={formatCurrency(results.totals.hpca)} />
+                    <ResultRow label="Total SDA" value={formatCurrency(results.totals.sda)} />
                     <ResultRow label="Total HRA" value={formatCurrency(results.totals.hra)} />
                     <ResultRow label="Total NPS Employer Contribution" value={formatCurrency(results.totals.employerContribution)} isSubtle/>
                     

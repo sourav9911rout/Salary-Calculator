@@ -65,6 +65,7 @@ export function SalaryForm({ onCalculate, isCalculating }: SalaryFormProps) {
       taCity: "Other Places",
       city: "Other Cities",
       includeHpca: true,
+      includeSda: false,
       includeHra: true,
       months: [{
         month: months[new Date().getMonth()],
@@ -326,6 +327,23 @@ export function SalaryForm({ onCalculate, isCalculating }: SalaryFormProps) {
                     </FormControl>
                     <FormLabel className="font-normal mb-0">
                       Include HPCA
+                    </FormLabel>
+                  </FormItem>
+                )}
+              />
+               <FormField
+                control={form.control}
+                name="includeSda"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center space-x-3 space-y-0">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormLabel className="font-normal">
+                      Include Special Duty Allowance (SDA)
                     </FormLabel>
                   </FormItem>
                 )}

@@ -17,6 +17,7 @@ export const SalaryFormSchema = z.object({
   daPercentage: z.coerce.number({invalid_type_error: "Please enter a valid number"}).min(0, "DA percentage cannot be negative"),
   taCity: z.string().min(1, "Transport Allowance city is required"),
   includeHpca: z.boolean().default(false),
+  includeSda: z.boolean().default(false),
   includeHra: z.boolean().default(false),
   city: z.string().min(1, "City is required when HRA is included"),
   months: z.array(MonthEntrySchema).min(1, "At least one month is required."),
@@ -47,6 +48,7 @@ export type MonthlySalaryResult = {
   ta: number;
   daOnTa: number;
   hpca: number;
+  sda: number;
   hra: number;
   grossSalary: number;
   nps: number;

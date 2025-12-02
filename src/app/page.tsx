@@ -46,7 +46,7 @@ export default function Home() {
     setIsCalculating(true);
     setResults(null);
 
-    const { basicPay, daPercentage, includeHpca, includeHra, months, payLevel, taCity, city } = data;
+    const { basicPay, daPercentage, includeHpca, includeSda, includeHra, months, payLevel, taCity, city } = data;
     
     const taType = higherTptaCities.includes(taCity) ? 'higher' : 'other';
 
@@ -73,13 +73,18 @@ export default function Home() {
           hpca = (baseHpca / totalDaysInMonth) * daysWorked;
       }
       
+      let sda = 0;
+      if (includeSda) {
+        sda = newBasicPay * 0.10;
+      }
+
       let hra = 0;
       if (includeHra) {
         const hraPercentage = getHraPercentage(city);
         hra = newBasicPay * (hraPercentage / 100);
       }
 
-      const grossSalary = newBasicPay + daOnBasic + ta + daOnTa + hpca + hra + employerContribution;
+      const grossSalary = newBasicPay + daOnBasic + ta + daOnTa + hpca + sda + hra + employerContribution;
 
       const fixedDeduction = getFixedDeduction(payLevel);
       
@@ -95,6 +100,7 @@ export default function Home() {
           ta: Math.round(ta),
           daOnTa: Math.round(daOnTa),
           hpca: Math.round(hpca),
+          sda: Math.round(sda),
           hra: Math.round(hra),
           grossSalary: Math.round(grossSalary),
           nps: Math.round(nps),
@@ -111,6 +117,7 @@ export default function Home() {
         acc.ta += current.ta;
         acc.daOnTa += current.daOnTa;
         acc.hpca += current.hpca;
+        acc.sda += current.sda;
         acc.hra += current.hra;
         acc.grossSalary += current.grossSalary;
         acc.nps += current.nps;
@@ -125,6 +132,7 @@ export default function Home() {
         ta: 0,
         daOnTa: 0,
         hpca: 0,
+        sda: 0,
         hra: 0,
         grossSalary: 0,
         nps: 0,
