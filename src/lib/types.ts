@@ -22,6 +22,7 @@ export const SalaryFormSchema = z.object({
   includeSda: z.boolean().default(false),
   includeHra: z.boolean().default(false),
   city: z.string().min(1, "City is required when HRA is included"),
+  hraPercentage: z.coerce.number({invalid_type_error: "Please enter a valid number"}).min(0, "HRA percentage cannot be negative").optional(),
   months: z.array(MonthEntrySchema).min(1, "At least one month is required."),
 }).refine(data => {
   if (!data.includeHra) {

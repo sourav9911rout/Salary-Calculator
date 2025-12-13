@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -58,7 +59,7 @@ export default function Home() {
     setIsCalculating(true);
     setResults(null);
 
-    let { basicPay, daPercentage, includeHpca, includeSda, includeHra, months, payLevel, taCity, city, fitmentFactor } = data;
+    let { basicPay, daPercentage, includeHpca, includeSda, includeHra, months, payLevel, taCity, city, fitmentFactor, hraPercentage } = data;
 
     if (cpcVersion === 8) {
       daPercentage = 0;
@@ -96,8 +97,8 @@ export default function Home() {
 
       let hra = 0;
       if (includeHra) {
-        const hraPercentage = getHraPercentage(city);
-        hra = newBasicPay * (hraPercentage / 100);
+        const finalHraPercentage = hraPercentage !== undefined ? hraPercentage : getHraPercentage(city);
+        hra = newBasicPay * (finalHraPercentage / 100);
       }
 
       const grossSalary = newBasicPay + daOnBasic + ta + daOnTa + hpca + sda + hra + employerContribution;

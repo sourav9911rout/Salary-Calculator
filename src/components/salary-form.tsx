@@ -1,4 +1,5 @@
 
+
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -55,6 +56,15 @@ const sortedCities = [
   ...(otherCity ? [otherCity] : [])
 ];
 
+const getHraPercentageFromCategory = (category: string) => {
+    switch (category) {
+        case "X": return 30;
+        case "Y": return 20;
+        case "Z": return 10;
+        default: return 10;
+    }
+}
+
 
 export function SalaryForm({ onCalculate, isCalculating, cpcVersion }: SalaryFormProps) {
   const form = useForm<z.infer<typeof SalaryFormSchema>>({
@@ -66,6 +76,7 @@ export function SalaryForm({ onCalculate, isCalculating, cpcVersion }: SalaryFor
       daPercentage: cpcVersion === 8 ? 0 : 58,
       taCity: "Other Places",
       city: "Other Cities",
+      hraPercentage: 10,
       includeHpca: true,
       includeSda: false,
       includeHra: true,
@@ -115,8 +126,11 @@ export function SalaryForm({ onCalculate, isCalculating, cpcVersion }: SalaryFor
 
   useEffect(() => {
     const selectedCity = cities.find(c => c.name === watchCity);
-    setCityCategory(selectedCity ? selectedCity.category : "Z");
-  }, [watchCity]);
+    const category = selectedCity ? selectedCity.category : "Z";
+    setCityCategory(category);
+    const percentage = getHraPercentageFromCategory(category);
+    form.setValue('hraPercentage', percentage);
+  }, [watchCity, form]);
 
   const basicPayOptions = payMatrix[watchPayLevel as keyof typeof payMatrix] || [];
 
@@ -426,7 +440,7 @@ export function SalaryForm({ onCalculate, isCalculating, cpcVersion }: SalaryFor
             </div>
             
             {watchIncludeHra && (
-              <div className="grid grid-cols-1 sm:grid-cols-[2fr_1fr] gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_1fr] gap-4">
                 <FormField
                   control={form.control}
                   name="city"
@@ -455,6 +469,19 @@ export function SalaryForm({ onCalculate, isCalculating, cpcVersion }: SalaryFor
                   <FormLabel>City Category</FormLabel>
                   <Input value={cityCategory} disabled className="font-bold text-center" />
                 </FormItem>
+                <FormField
+                    control={form.control}
+                    name="hraPercentage"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>HRA Percentage (%)</FormLabel>
+                        <FormControl>
+                            <Input type="number" placeholder="e.g., 30" {...field} onChange={e => field.onChange(parseFloat(e.target.value) || 0)} />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
               </div>
             )}
             
