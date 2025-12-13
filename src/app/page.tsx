@@ -1,15 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SalaryForm } from "@/components/salary-form";
 import { SalaryResults } from "@/components/salary-results";
 import type { SalaryFormData, SalaryResultsData, MonthlySalaryResult } from "@/lib/types";
 import { cities } from "@/lib/cities";
 import { higherTptaCities } from "@/lib/ta-cities";
+import { CpcSelector } from "@/components/cpc-selector";
 
 export default function Home() {
   const [results, setResults] = useState<SalaryResultsData | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
+  const [cpcVersion, setCpcVersion] = useState<number | null>(null);
+  const [heading, setHeading] = useState("7th CPC Salary Calculator");
+
+  useEffect(() => {
+    if (cpcVersion === 8) {
+      setHeading("Assumed 8th CPC Salary Calculator");
+    } else {
+      setHeading("7th CPC Salary Calculator");
+    }
+  }, [cpcVersion]);
 
   const getFixedDeduction = (payLevel: string): number => {
     const level = parseInt(payLevel.replace('A', ''));
@@ -20,9 +31,10 @@ export default function Home() {
     return 250;
   };
 
-  const getTaAmount = (payLevel: string, taType: 'higher' | 'other'): number => {
+  const getTaAmount = (payLevel: string, taCity: string): number => {
+    const isHigherTpta = higherTptaCities.includes(taCity);
     const level = parseInt(payLevel.replace('A', ''));
-    if (taType === 'higher') {
+    if (isHigherTpta) {
       if (level >= 9) return 7200;
       if (level >= 3) return 3600;
       return 1350;
@@ -47,8 +59,6 @@ export default function Home() {
     setResults(null);
 
     const { basicPay, daPercentage, includeHpca, includeSda, includeHra, months, payLevel, taCity, city } = data;
-    
-    const taType = higherTptaCities.includes(taCity) ? 'higher' : 'other';
 
     const monthlyResults: MonthlySalaryResult[] = months.map(monthEntry => {
       const { month, year, daysWorked } = monthEntry;
@@ -62,7 +72,7 @@ export default function Home() {
       const nps = npsBase * 0.10;
       const employerContribution = npsBase * 0.14;
       
-      const baseTa = getTaAmount(payLevel, taType);
+      const baseTa = getTaAmount(payLevel, taCity);
       const ta = (baseTa / totalDaysInMonth) * daysWorked;
 
       const daOnTa = ta * (daPercentage / 100);
@@ -151,14 +161,18 @@ export default function Home() {
         setIsCalculating(false);
     }, 500);
   };
+  
+  if (!cpcVersion) {
+    return <CpcSelector onSelect={setCpcVersion} />;
+  }
 
   return (
     <main className="min-h-screen p-4 sm:p-8">
       <div className="max-w-7xl mx-auto">
         <header className="text-center mb-10">
-          <h1 className="text-4xl lg:text-5xl font-extrabold text-primary tracking-tight font-headline">7th CPC Salary Calculator</h1>
+          <h1 className="text-4xl lg:text-5xl font-extrabold text-primary tracking-tight font-headline">{heading}</h1>
           <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">
-            An intuitive 7th CPC salary calculator. Enter your details to instantly compute your earnings and deductions.
+            An intuitive CPC salary calculator. Enter your details to instantly compute your earnings and deductions.
           </p>
         </header>
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
