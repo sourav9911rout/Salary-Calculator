@@ -62,7 +62,7 @@ export function SalaryForm({ onCalculate, isCalculating, cpcVersion }: SalaryFor
     defaultValues: {
       payLevel: "5",
       basicPay: 29200,
-      fitmentFactor: cpcVersion === 8 ? 2.57 : 1,
+      fitmentFactor: cpcVersion === 8 ? 2.57 : undefined,
       daPercentage: 58,
       taCity: "Other Places",
       city: "Other Cities",
@@ -90,8 +90,20 @@ export function SalaryForm({ onCalculate, isCalculating, cpcVersion }: SalaryFor
   const watchIncludeHra = form.watch("includeHra");
   const watchedMonths = form.watch("months");
   const watchCity = form.watch("city");
-  
+  const watchBasicPay = form.watch("basicPay");
+  const watchFitmentFactor = form.watch("fitmentFactor");
+
   const [cityCategory, setCityCategory] = useState("Z");
+  const [calculated8thCpcBasicPay, setCalculated8thCpcBasicPay] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (cpcVersion === 8 && watchBasicPay && watchFitmentFactor) {
+      setCalculated8thCpcBasicPay(watchBasicPay * watchFitmentFactor);
+    } else {
+      setCalculated8thCpcBasicPay(null);
+    }
+  }, [cpcVersion, watchBasicPay, watchFitmentFactor]);
+
 
   useEffect(() => {
     const selectedCity = cities.find(c => c.name === watchCity);
@@ -156,7 +168,7 @@ export function SalaryForm({ onCalculate, isCalculating, cpcVersion }: SalaryFor
                     <FormItem>
                       <FormLabel>Fitment Factor</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="e.g., 2.57" {...field} step="0.01" />
+                        <Input type="number" placeholder="e.g., 2.57" {...field} onChange={e => field.onChange(parseFloat(e.target.value) || 0)} step="0.01" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -188,6 +200,17 @@ export function SalaryForm({ onCalculate, isCalculating, cpcVersion }: SalaryFor
                   </FormItem>
                 )}
               />
+
+              {cpcVersion === 8 && calculated8thCpcBasicPay !== null && (
+                 <FormItem>
+                    <FormLabel>8th CPC Basic Pay (Calculated)</FormLabel>
+                    <Input
+                      disabled
+                      value={Math.round(calculated8thCpcBasicPay).toLocaleString('en-IN')}
+                      className="font-bold"
+                    />
+                 </FormItem>
+              )}
             
             <Separator />
             
@@ -255,7 +278,7 @@ export function SalaryForm({ onCalculate, isCalculating, cpcVersion }: SalaryFor
                           <FormItem>
                             <FormLabel>Days Worked</FormLabel>
                             <FormControl>
-                              <Input type="number" placeholder="e.g., 30" {...field} />
+                              <Input type="number" placeholder="e.g., 30" {...field} onChange={e => field.onChange(parseInt(e.target.value) || 0)} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -298,7 +321,7 @@ export function SalaryForm({ onCalculate, isCalculating, cpcVersion }: SalaryFor
                 <FormItem>
                   <FormLabel>DA Percentage (%)</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="e.g., 50" {...field} />
+                    <Input type="number" placeholder="e.g., 50" {...field} onChange={e => field.onChange(parseFloat(e.target.value) || 0)} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -433,3 +456,5 @@ export function SalaryForm({ onCalculate, isCalculating, cpcVersion }: SalaryFor
     </Card>
   )
 }
+
+    

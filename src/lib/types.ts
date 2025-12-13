@@ -1,3 +1,4 @@
+
 import { z } from "zod";
 
 const months = [
@@ -22,6 +23,14 @@ export const SalaryFormSchema = z.object({
   includeHra: z.boolean().default(false),
   city: z.string().min(1, "City is required when HRA is included"),
   months: z.array(MonthEntrySchema).min(1, "At least one month is required."),
+}).refine(data => {
+  if (!data.includeHra) {
+    return true;
+  }
+  return !!data.city;
+}, {
+  message: "City is required when HRA is included",
+  path: ["city"],
 }).refine(data => {
   for (const monthEntry of data.months) {
     if (monthEntry.year && monthEntry.month) {
@@ -62,3 +71,5 @@ export type SalaryResultsData = {
   monthlyResults: MonthlySalaryResult[];
   totals: Omit<MonthlySalaryResult, 'month' | 'year'>;
 };
+
+    
