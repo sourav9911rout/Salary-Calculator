@@ -347,6 +347,11 @@ export function SalaryForm({ onCalculate, isCalculating, cpcVersion }: SalaryFor
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Transport Allowance City</FormLabel>
+                   {cpcVersion === 8 && (
+                    <FormDescription>
+                      ( Assuming TA will be same as 7th CPC )
+                    </FormDescription>
+                  )}
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
