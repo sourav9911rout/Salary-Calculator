@@ -9,20 +9,21 @@ const months = [
 export const MonthEntrySchema = z.object({
   month: z.enum(months),
   year: z.coerce.number(),
-  daysWorked: z.coerce.number({invalid_type_error: "Please enter a valid number"}).min(0, "Days worked cannot be negative").max(31, "Days worked cannot exceed 31"),
+  daysWorked: z.union([z.string().length(0), z.coerce.number({invalid_type_error: "Please enter a valid number"}).min(0, "Days worked cannot be negative").max(31, "Days worked cannot exceed 31")]),
 });
 
 export const SalaryFormSchema = z.object({
   payLevel: z.string().min(1, "Pay level is required"),
   basicPay: z.coerce.number({invalid_type_error: "Please enter a valid number"}).positive("Basic pay must be a positive number"),
-  fitmentFactor: z.coerce.number({invalid_type_error: "Please enter a valid number"}).min(0, "Fitment factor cannot be negative").optional(),
-  daPercentage: z.coerce.number({invalid_type_error: "Please enter a valid number"}).min(0, "DA percentage cannot be negative"),
+  fitmentFactor: z.union([z.string().length(0), z.coerce.number({invalid_type_error: "Please enter a valid number"}).min(0, "Fitment factor cannot be negative").optional()]),
+  daPercentage: z.union([z.string().length(0), z.coerce.number({invalid_type_error: "Please enter a valid number"}).min(0, "DA percentage cannot be negative")]),
   taCity: z.string().min(1, "Transport Allowance city is required"),
   includeHpca: z.boolean().default(false),
   includeSda: z.boolean().default(false),
   includeHra: z.boolean().default(false),
   city: z.string().min(1, "City is required when HRA is included"),
-  hraPercentage: z.coerce.number({invalid_type_error: "Please enter a valid number"}).min(0, "HRA percentage cannot be negative").optional(),
+  cityCategory: z.string().optional(),
+  hraPercentage: z.union([z.string().length(0), z.coerce.number({invalid_type_error: "Please enter a valid number"}).min(0, "HRA percentage cannot be negative").optional()]),
   months: z.array(MonthEntrySchema).min(1, "At least one month is required."),
 }).refine(data => {
   if (!data.includeHra) {
@@ -34,7 +35,7 @@ export const SalaryFormSchema = z.object({
   path: ["city"],
 }).refine(data => {
   for (const monthEntry of data.months) {
-    if (monthEntry.year && monthEntry.month) {
+    if (monthEntry.year && monthEntry.month && typeof monthEntry.daysWorked === 'number') {
       const monthIndex = months.indexOf(monthEntry.month);
       const daysInMonth = new Date(monthEntry.year, monthIndex + 1, 0).getDate();
       if (monthEntry.daysWorked > daysInMonth) {

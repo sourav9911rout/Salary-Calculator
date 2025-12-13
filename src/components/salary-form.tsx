@@ -190,7 +190,7 @@ export function SalaryForm({ onCalculate, isCalculating, cpcVersion }: SalaryFor
                     <FormItem>
                       <FormLabel>Fitment Factor</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="e.g., 2.57" {...field} onChange={e => field.onChange(parseFloat(e.target.value) || 0)} step="0.01" />
+                        <Input type="number" placeholder="e.g., 2.57" {...field} onChange={e => field.onChange(e.target.value === '' ? '' : parseFloat(e.target.value))} step="0.01" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -300,7 +300,7 @@ export function SalaryForm({ onCalculate, isCalculating, cpcVersion }: SalaryFor
                           <FormItem>
                             <FormLabel>Days Worked</FormLabel>
                             <FormControl>
-                              <Input type="number" placeholder="e.g., 30" {...field} onChange={e => field.onChange(parseInt(e.target.value) || 0)} />
+                              <Input type="number" placeholder="e.g., 30" {...field} onChange={e => field.onChange(e.target.value === '' ? '' : parseInt(e.target.value))} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -347,7 +347,7 @@ export function SalaryForm({ onCalculate, isCalculating, cpcVersion }: SalaryFor
                   <FormItem>
                     <FormLabel>DA Percentage (%)</FormLabel>
                     <FormControl>
-                      <Input type="number" placeholder="e.g., 50" {...field} onChange={e => field.onChange(parseFloat(e.target.value) || 0)} />
+                      <Input type="number" placeholder="e.g., 50" {...field} onChange={e => field.onChange(e.target.value === '' ? '' : parseFloat(e.target.value))} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -465,10 +465,16 @@ export function SalaryForm({ onCalculate, isCalculating, cpcVersion }: SalaryFor
                     </FormItem>
                   )}
                 />
-                <FormItem>
-                  <FormLabel>City Category</FormLabel>
-                  <Input value={cityCategory} disabled className="font-bold text-center" />
-                </FormItem>
+                 <FormField
+                    control={form.control}
+                    name="cityCategory"
+                    render={() => (
+                      <FormItem>
+                        <FormLabel>City Category</FormLabel>
+                        <Input value={cityCategory} disabled className="font-bold text-center" />
+                      </FormItem>
+                    )}
+                 />
                 <FormField
                     control={form.control}
                     name="hraPercentage"
@@ -476,7 +482,7 @@ export function SalaryForm({ onCalculate, isCalculating, cpcVersion }: SalaryFor
                         <FormItem>
                         <FormLabel>HRA Percentage (%)</FormLabel>
                         <FormControl>
-                            <Input type="number" placeholder="e.g., 30" {...field} onChange={e => field.onChange(parseFloat(e.target.value) || 0)} />
+                            <Input type="number" placeholder="e.g., 30" {...field} onChange={e => field.onChange(e.target.value === '' ? '' : parseFloat(e.target.value))} />
                         </FormControl>
                         <FormMessage />
                         </FormItem>
