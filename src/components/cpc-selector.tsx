@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -26,7 +27,7 @@ export function CpcSelector({ onSelect }: CpcSelectorProps) {
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <Card 
-            className="cursor-pointer hover:bg-accent/50 transition-colors"
+            className="cursor-pointer bg-secondary/50 hover:bg-accent/50 transition-colors"
             onClick={() => onSelect(7)}
           >
             <CardContent className="p-6">
@@ -34,7 +35,7 @@ export function CpcSelector({ onSelect }: CpcSelectorProps) {
             </CardContent>
           </Card>
           <Card 
-            className="cursor-pointer hover:bg-accent/50 transition-colors"
+            className="cursor-pointer bg-secondary/50 hover:bg-accent/50 transition-colors"
             onClick={() => onSelect(8)}
           >
             <CardContent className="p-6">
