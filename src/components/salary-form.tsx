@@ -321,7 +321,11 @@ export function SalaryForm({ onCalculate, isCalculating, cpcVersion }: SalaryFor
 
             <Separator />
 
-            {cpcVersion !== 8 && (
+            {cpcVersion === 8 ? (
+              <div className="text-sm text-muted-foreground p-3 bg-muted/50 rounded-md border border-dashed">
+                Dearness Allowance (DA) is assumed to be 0% for the 8th CPC calculation.
+              </div>
+            ) : (
               <FormField
                 control={form.control}
                 name="daPercentage"
@@ -465,7 +469,3 @@ export function SalaryForm({ onCalculate, isCalculating, cpcVersion }: SalaryFor
     </Card>
   )
 }
-
-    
-
-    
