@@ -36,6 +36,7 @@ import { allTaCities } from "@/lib/ta-cities"
 interface SalaryFormProps {
   onCalculate: (data: SalaryFormData) => void;
   isCalculating: boolean;
+  cpcVersion: number;
 }
 
 const months = [
@@ -55,12 +56,13 @@ const sortedCities = [
 ];
 
 
-export function SalaryForm({ onCalculate, isCalculating }: SalaryFormProps) {
+export function SalaryForm({ onCalculate, isCalculating, cpcVersion }: SalaryFormProps) {
   const form = useForm<z.infer<typeof SalaryFormSchema>>({
     resolver: zodResolver(SalaryFormSchema),
     defaultValues: {
       payLevel: "5",
       basicPay: 29200,
+      fitmentFactor: cpcVersion === 8 ? 2.57 : 1,
       daPercentage: 58,
       taCity: "Other Places",
       city: "Other Cities",
@@ -146,12 +148,28 @@ export function SalaryForm({ onCalculate, isCalculating }: SalaryFormProps) {
                   </FormItem>
                 )}
               />
+              {cpcVersion === 8 && (
+                <FormField
+                  control={form.control}
+                  name="fitmentFactor"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Fitment Factor</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="e.g., 2.57" {...field} step="0.01" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+              </div>
               <FormField
                 control={form.control}
                 name="basicPay"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Current Basic Pay</FormLabel>
+                    <FormLabel>{cpcVersion === 8 ? '7th CPC Basic Pay' : 'Current Basic Pay'}</FormLabel>
                     <Select onValueChange={(value) => field.onChange(parseInt(value))} value={field.value.toString()}>
                       <FormControl>
                         <SelectTrigger>
@@ -170,7 +188,6 @@ export function SalaryForm({ onCalculate, isCalculating }: SalaryFormProps) {
                   </FormItem>
                 )}
               />
-            </div>
             
             <Separator />
             

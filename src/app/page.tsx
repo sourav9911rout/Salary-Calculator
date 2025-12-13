@@ -58,14 +58,16 @@ export default function Home() {
     setIsCalculating(true);
     setResults(null);
 
-    const { basicPay, daPercentage, includeHpca, includeSda, includeHra, months, payLevel, taCity, city } = data;
+    const { basicPay, daPercentage, includeHpca, includeSda, includeHra, months, payLevel, taCity, city, fitmentFactor } = data;
+
+    const finalBasicPay = cpcVersion === 8 && fitmentFactor ? basicPay * fitmentFactor : basicPay;
 
     const monthlyResults: MonthlySalaryResult[] = months.map(monthEntry => {
       const { month, year, daysWorked } = monthEntry;
       const monthIndex = new Date(Date.parse(month +" 1, 2012")).getMonth();
       const totalDaysInMonth = new Date(year, monthIndex + 1, 0).getDate();
 
-      const newBasicPay = (basicPay / totalDaysInMonth) * daysWorked;
+      const newBasicPay = (finalBasicPay / totalDaysInMonth) * daysWorked;
       const daOnBasic = newBasicPay * (daPercentage / 100);
       
       const npsBase = newBasicPay + daOnBasic;
@@ -177,7 +179,7 @@ export default function Home() {
         </header>
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
           <div className="lg:col-span-2">
-            <SalaryForm onCalculate={handleCalculate} isCalculating={isCalculating} />
+            <SalaryForm onCalculate={handleCalculate} isCalculating={isCalculating} cpcVersion={cpcVersion} />
           </div>
           <div className="lg:col-span-3">
             <SalaryResults results={results} isCalculating={isCalculating} />
