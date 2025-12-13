@@ -440,7 +440,7 @@ export function SalaryForm({ onCalculate, isCalculating, cpcVersion }: SalaryFor
             </div>
             
             {watchIncludeHra && (
-              <div className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_1fr] gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
                 <FormField
                   control={form.control}
                   name="city"
