@@ -63,7 +63,7 @@ export function SalaryForm({ onCalculate, isCalculating, cpcVersion }: SalaryFor
       payLevel: "5",
       basicPay: 29200,
       fitmentFactor: cpcVersion === 8 ? 2.57 : undefined,
-      daPercentage: 58,
+      daPercentage: cpcVersion === 8 ? 0 : 58,
       taCity: "Other Places",
       city: "Other Cities",
       includeHpca: true,
@@ -95,6 +95,14 @@ export function SalaryForm({ onCalculate, isCalculating, cpcVersion }: SalaryFor
 
   const [cityCategory, setCityCategory] = useState("Z");
   const [calculated8thCpcBasicPay, setCalculated8thCpcBasicPay] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (cpcVersion === 8) {
+      form.setValue('daPercentage', 0);
+    } else {
+      form.setValue('daPercentage', 58);
+    }
+  }, [cpcVersion, form]);
 
   useEffect(() => {
     if (cpcVersion === 8 && watchBasicPay && watchFitmentFactor) {
@@ -313,20 +321,21 @@ export function SalaryForm({ onCalculate, isCalculating, cpcVersion }: SalaryFor
 
             <Separator />
 
-
-            <FormField
-              control={form.control}
-              name="daPercentage"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>DA Percentage (%)</FormLabel>
-                  <FormControl>
-                    <Input type="number" placeholder="e.g., 50" {...field} onChange={e => field.onChange(parseFloat(e.target.value) || 0)} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {cpcVersion !== 8 && (
+              <FormField
+                control={form.control}
+                name="daPercentage"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>DA Percentage (%)</FormLabel>
+                    <FormControl>
+                      <Input type="number" placeholder="e.g., 50" {...field} onChange={e => field.onChange(parseFloat(e.target.value) || 0)} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
             
             <FormField
               control={form.control}
@@ -456,5 +465,7 @@ export function SalaryForm({ onCalculate, isCalculating, cpcVersion }: SalaryFor
     </Card>
   )
 }
+
+    
 
     

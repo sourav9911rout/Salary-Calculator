@@ -58,7 +58,11 @@ export default function Home() {
     setIsCalculating(true);
     setResults(null);
 
-    const { basicPay, daPercentage, includeHpca, includeSda, includeHra, months, payLevel, taCity, city, fitmentFactor } = data;
+    let { basicPay, daPercentage, includeHpca, includeSda, includeHra, months, payLevel, taCity, city, fitmentFactor } = data;
+
+    if (cpcVersion === 8) {
+      daPercentage = 0;
+    }
 
     const finalBasicPay = cpcVersion === 8 && fitmentFactor ? basicPay * fitmentFactor : basicPay;
 
@@ -221,3 +225,5 @@ export default function Home() {
     </main>
   );
 }
+
+    
