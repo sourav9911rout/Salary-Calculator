@@ -8,6 +8,8 @@ import type { SalaryFormData, SalaryResultsData, MonthlySalaryResult } from "@/l
 import { cities } from "@/lib/cities";
 import { higherTptaCities } from "@/lib/ta-cities";
 import { CpcSelector } from "@/components/cpc-selector";
+import { Button } from "@/components/ui/button";
+import { Repeat } from "lucide-react";
 
 export default function Home() {
   const [results, setResults] = useState<SalaryResultsData | null>(null);
@@ -22,6 +24,11 @@ export default function Home() {
       setHeading("7th CPC Salary Calculator");
     }
   }, [cpcVersion]);
+
+  const handleSwitchCalculator = () => {
+    setCpcVersion(null);
+    setResults(null);
+  };
 
   const getFixedDeduction = (payLevel: string): number => {
     const level = parseInt(payLevel.replace('A', ''));
@@ -176,11 +183,20 @@ export default function Home() {
   return (
     <main className="min-h-screen p-4 sm:p-8">
       <div className="max-w-7xl mx-auto">
-        <header className="text-center mb-10">
+        <header className="text-center mb-10 relative">
           <h1 className="text-4xl lg:text-5xl font-extrabold text-primary tracking-tight font-headline">{heading}</h1>
           <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">
             An intuitive CPC salary calculator. Enter your details to instantly compute your earnings and deductions.
           </p>
+          <Button
+            variant="outline"
+            size="sm"
+            className="absolute top-0 right-0"
+            onClick={handleSwitchCalculator}
+          >
+            <Repeat className="mr-2 h-4 w-4" />
+            Switch Calculator
+          </Button>
         </header>
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
           <div className="lg:col-span-2">
@@ -226,5 +242,3 @@ export default function Home() {
     </main>
   );
 }
-
-    
